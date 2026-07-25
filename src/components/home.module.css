@@ -1,0 +1,12 @@
+.nav {
+  justify-content: center;
+}
+.navItems {
+  gap: 5px;
+}
+.navItems li:hover {
+  cursor: pointer;
+}
+.posts {
+  gap: 10px;
+}

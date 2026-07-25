@@ -1,0 +1,36 @@
+.signup {
+  width: 20%;
+  margin: auto;
+  margin-top: 5vh;
+  gap: 3px;
+  min-width: 300px;
+}
+.signup button {
+  margin-top: 10px;
+  border: none;
+  border-radius: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  transition-property: transform;
+  transition-duration: 700ms;
+  transition-delay: 200ms;
+  background-color: var(--btn-color);
+  color: var(--secondary-color);
+}
+.signup button:hover {
+  transform: scale(1.03);
+}
+.signup input {
+  border: 0.5px solid gray;
+  border-radius: 15px;
+  padding: 5px;
+  padding-left: 15px;
+}
+.error {
+  color: rgb(233, 52, 52);
+}
+ul {
+  padding: 0px;
+}
