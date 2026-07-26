@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { Navigate, useOutletContext } from "react-router";
 import { useState } from "react";
-import Post from "./post";
 import { useRef } from "react";
+import style from "./home.module.css";
+import Post from "./post";
 
 const HomePage = () => {
   const { fetchURL, JWT } = useOutletContext();
@@ -101,20 +102,22 @@ const HomePage = () => {
   return (
     <>
       {!loading ? (
-        <section className={`flex col`}>
+        <section className={`flex col ${style.posts}`}>
           {posts.length >= 1 ? (
             <>
               {posts.map((post) => (
                 <Post
                   key={post.id}
+                  id={post.id}
                   user={post.user.user}
                   date={post.date}
                   text={post.text}
                   likes={post._count.likes}
+                  isLikedByUser={post.isLikedByUser}
                   comments={post.comments}
                 />
               ))}
-              {cursor ? <p ref={ref}>..loading</p> : null}
+              {cursor ? <p ref={ref}>loading...</p> : null}
             </>
           ) : (
             <p>There aren't any posts</p>
