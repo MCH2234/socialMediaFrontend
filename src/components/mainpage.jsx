@@ -67,7 +67,7 @@ const MainPage = () => {
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [JWT]);
 
   const userNavItems = [
     {

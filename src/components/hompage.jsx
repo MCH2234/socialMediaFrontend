@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRef } from "react";
 import style from "./home.module.css";
 import Post from "./post";
+import AddPost from "./addpost";
 
 const HomePage = () => {
-  const { fetchURL, JWT } = useOutletContext();
+  const { fetchURL, JWT, user } = useOutletContext();
 
   const [cursor, setCursor] = useState();
   const [loading, setLoading] = useState(true);
@@ -102,27 +103,31 @@ const HomePage = () => {
   return (
     <>
       {!loading ? (
-        <section className={`flex col ${style.posts}`}>
-          {posts.length >= 1 ? (
-            <>
-              {posts.map((post) => (
-                <Post
-                  key={post.id}
-                  id={post.id}
-                  user={post.user.user}
-                  date={post.date}
-                  text={post.text}
-                  likes={post._count.likes}
-                  isLikedByUser={post.isLikedByUser}
-                  comments={post.comments}
-                />
-              ))}
-              {cursor ? <p ref={ref}>loading...</p> : null}
-            </>
-          ) : (
-            <p>There aren't any posts</p>
-          )}
-        </section>
+        <main>
+          <AddPost posts={posts} setPosts={setPosts} />
+          <section className={`flex col ${style.posts}`}>
+            {posts.length >= 1 ? (
+              <>
+                {posts.map((post) => (
+                  <Post
+                    key={post.id}
+                    id={post.id}
+                    user={post.user.user}
+                    date={post.date}
+                    text={post.text}
+                    likes={post._count.likes}
+                    isLikedByUser={post.isLikedByUser}
+                    comments={post.comments}
+                    isUserPost={post.user.id === user.id ? true : false}
+                  />
+                ))}
+                {cursor ? <p ref={ref}>loading...</p> : null}
+              </>
+            ) : (
+              <p>There aren't any posts</p>
+            )}
+          </section>
+        </main>
       ) : (
         <p>Loading...</p>
       )}

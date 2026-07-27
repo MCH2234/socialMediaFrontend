@@ -34,7 +34,6 @@ const Login = () => {
     const body = await r.json();
     if (r.status >= 200 && r.status <= 299) {
       localStorage.setItem("token", JSON.stringify(body.token));
-      console.log(body.token);
       navigate("/");
       setJWT(body.token);
     } else {

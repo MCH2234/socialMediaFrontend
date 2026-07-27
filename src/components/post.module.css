@@ -4,9 +4,33 @@
   padding-right: 30px;
   padding-bottom: 10px;
   padding-top: 5px;
+  min-width: 400px;
 }
 .date {
   margin-left: auto;
+}
+.dateUser {
+  position: relative;
+}
+.button {
+  position: absolute;
+  width: 80px;
+  border: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 5px;
+  background-color: var(--btn-color);
+  color: var(--primary-color);
+}
+.edit {
+  top: 23px;
+}
+.buttonDiv {
+  position: absolute;
+  right: 220px;
+  top: 10px;
 }
 #like:hover {
   cursor: pointer;
@@ -16,4 +40,36 @@
 }
 .likes p {
   margin: 0;
+}
+.add {
+  resize: none;
+  padding: 10px;
+  height: 50px;
+  border-radius: 5px;
+}
+.addPostForm {
+  gap: 4px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  min-width: 300px;
+}
+.addPostForm button {
+  margin-left: auto;
+  width: fit-content;
+  border: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 5px;
+  background-color: var(--btn-color);
+  color: var(--primary-color);
+}
+.editForm textarea {
+  resize: none;
+}
+.editBtn {
+  gap: 3px;
+  margin-left: auto;
+  margin-top: 2px;
 }
