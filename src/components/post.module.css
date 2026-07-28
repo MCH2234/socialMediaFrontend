@@ -14,6 +14,8 @@
 }
 .dateUser {
   position: relative;
+  margin-bottom: 10px;
+  margin-top: 5px;
 }
 .button {
   position: absolute;
@@ -25,7 +27,7 @@
   padding-bottom: 1px;
   border-radius: 5px;
   background-color: var(--btn-color);
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 .edit {
   top: 23px;
@@ -51,6 +53,7 @@
   padding: 10px;
   height: 50px;
   border-radius: 5px;
+  color: var(--secondary-color);
 }
 .addPostForm {
   gap: 4px;
@@ -72,11 +75,27 @@
 }
 .editForm textarea {
   resize: none;
+  color: var(--secondary-color);
+  background-color: #3b3b3b;
+  border-radius: 5px;
+  padding: 10px;
 }
 .editBtn {
   gap: 3px;
   margin-left: auto;
   margin-top: 2px;
+}
+.editBtn button {
+  color: var(--secondary-color);
+  width: fit-content;
+  border: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 5px;
+  background-color: var(--btn-color);
+  color: var(--primary-color);
 }
 /* .experiment {
   position: absolute;
@@ -95,4 +114,17 @@
   border-color: var(--dark-reader-border);
   border-radius: 50px;
   text-align: center;
+}
+.pfp:hover {
+  cursor: pointer;
+}
+.pfpNames {
+  justify-content: center;
+  align-items: start;
+  margin-left: 10px;
+}
+.postText {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 5px;
 }

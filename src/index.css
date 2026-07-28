@@ -29,7 +29,7 @@ li {
   list-style: none;
 }
 button {
-  color: #35359c;
+  background-color: var(--btn-color);
 }
 button:hover {
   cursor: pointer;

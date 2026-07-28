@@ -107,10 +107,10 @@ const Post = ({
     <div ref={postToBeDeleted} className={`flex col ${style.post}`}>
       {/* <span className={`${style.experiment}`}></span> */}
       <div className={`flex row ${style.dateUser}`}>
+        <div className={`${style.pfp}`}>
+          <p>{initials}</p>
+        </div>
         <div className={`flex col ${style.pfpNames}`}>
-          <div className={`${style.pfp}`}>
-            <p>{initials}</p>
-          </div>
           <p className="no-margin">
             {post.user.first} {post.user.last}
           </p>
@@ -139,10 +139,11 @@ const Post = ({
         ) : null}
       </div>
       {!edit ? (
-        <p className={"no-margin"}>{postInfo.text}</p>
+        <p className={`${style.postText}`}>{postInfo.text}</p>
       ) : (
         <form className={`flex col ${style.editForm}`}>
           <textarea
+            placeholder="Edit your comment"
             value={postInfo.text}
             name={"edit"}
             onChange={(e) => setPostInfo({ ...postInfo, text: e.target.value })}
