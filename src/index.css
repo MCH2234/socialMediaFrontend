@@ -3,12 +3,18 @@
   --border: 0.5px solid black;
   --main-color: rgb(31, 31, 31);
   --secondary-color: rgb(215, 215, 215);
+  --dark-reader-text-d7d7d7: #d7d7d7;
+  --dark-reader-text: #ceccca;
+  --dark-reader-background-3535dd: #3535dd;
+  --dark-reader-color: #313333;
+  --dark-reader-border-858585: #858585;
   --btn-color: rgb(53, 53, 221);
-  background-color: var(--main-color);
+  --light-dark: rgb(133, 133, 133);
   color: var(--secondary-color);
 }
 body {
   margin: 0;
+  background-color: var(--dark-reader-color);
 }
 .flex {
   display: flex;
@@ -22,6 +28,12 @@ body {
 li {
   list-style: none;
 }
+button {
+  color: #35359c;
+}
 button:hover {
   cursor: pointer;
+}
+.no-margin {
+  margin: 0;
 }

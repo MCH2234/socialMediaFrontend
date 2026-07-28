@@ -5,31 +5,28 @@ import { format } from "date-fns";
 import { useOutletContext } from "react-router";
 import { useRef, useState } from "react";
 const Post = ({
-  id,
-  user,
-  date,
-  likes,
-  text,
-  isLikedByUser,
+  post,
   isUserPost,
   // comments,
 }) => {
   const { JWT, fetchURL } = useOutletContext();
-  const [like, setLike] = useState(isLikedByUser);
-  const [totalLikes, setLikes] = useState(likes);
+  const [like, setLike] = useState(post.isLikedByUser);
+  const [totalLikes, setLikes] = useState(post._count.likes);
   const [pending, setPending] = useState(false);
   const [edit, setEdit] = useState(false);
   const [postInfo, setPostInfo] = useState({
-    date: date,
-    text: text,
+    date: post.date,
+    text: post.text,
   });
+  let initials =
+    post.user.first[0].toUpperCase() + post.user.last[0].toUpperCase();
 
   const postToBeDeleted = useRef(null);
 
   const deletePost = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${fetchURL}/post/${id}`, {
+      const response = await fetch(`${fetchURL}/post/${post.id}`, {
         headers: {
           Authorization: `Bearer ${JWT}`,
         },
@@ -51,7 +48,7 @@ const Post = ({
   const editPost = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${fetchURL}/post/${id}`, {
+      const response = await fetch(`${fetchURL}/post/${post.id}`, {
         headers: {
           Authorization: `Bearer ${JWT}`,
           "Content-Type": "application/json",
@@ -61,7 +58,7 @@ const Post = ({
       });
       const body = await response.json();
       if (!response.ok) {
-        setPostInfo({ date: date, text: text });
+        setPostInfo({ date: post.date, text: post.text });
         setEdit(false);
         throw new Error(body.error);
       } else {
@@ -85,14 +82,14 @@ const Post = ({
     setLikes(() => (changedLike ? totalLikes + 1 : totalLikes - 1));
     try {
       if (!like) {
-        await fetch(`${fetchURL}/post/like/${id}`, {
+        await fetch(`${fetchURL}/post/like/${post.id}`, {
           headers: {
             Authorization: `Bearer ${JWT}`,
           },
           method: "POST",
         });
       } else {
-        await fetch(`${fetchURL}/post/like/${id}`, {
+        await fetch(`${fetchURL}/post/like/${post.id}`, {
           headers: {
             Authorization: `Bearer ${JWT}`,
           },
@@ -108,8 +105,17 @@ const Post = ({
   };
   return (
     <div ref={postToBeDeleted} className={`flex col ${style.post}`}>
+      {/* <span className={`${style.experiment}`}></span> */}
       <div className={`flex row ${style.dateUser}`}>
-        <p>@{user}</p>
+        <div className={`flex col ${style.pfpNames}`}>
+          <div className={`${style.pfp}`}>
+            <p>{initials}</p>
+          </div>
+          <p className="no-margin">
+            {post.user.first} {post.user.last}
+          </p>
+          <p className="no-margin">@{post.user.user}</p>
+        </div>
         {!edit ? (
           <p className={`${style.date}`}>
             {format(postInfo.date, "do LLL HH:mmbb")}
@@ -133,7 +139,7 @@ const Post = ({
         ) : null}
       </div>
       {!edit ? (
-        <p>{postInfo.text}</p>
+        <p className={"no-margin"}>{postInfo.text}</p>
       ) : (
         <form className={`flex col ${style.editForm}`}>
           <textarea
@@ -146,7 +152,7 @@ const Post = ({
             <button
               onClick={() => {
                 setEdit(false);
-                setPostInfo({ ...postInfo, text: text });
+                setPostInfo({ ...postInfo, text: post.text });
               }}
             >
               Cancel
