@@ -11,6 +11,7 @@
   --btn-color: rgb(53, 53, 221);
   --light-dark: rgb(133, 133, 133);
   color: var(--secondary-color);
+  --form-elements-bg-color: #3b3b3b;
 }
 body {
   margin: 0;
