@@ -7,11 +7,13 @@ const Comment = ({ comment }) => {
       <div className={`${style.pfp}`}>
         <p>{initials}</p>
       </div>
-      <div className={`flex col ${style.pfpNames}`}>
-        <p className="no-margin">
-          {comment.user.first} {comment.user.last}
-        </p>
-        <p className="no-margin">@{comment.user.user}</p>
+      <div className={`${style.mainTextContainer}`}>
+        <div className={`flex col ${style.pfpNames}`}>
+          <p className="no-margin">
+            {comment.user.first} {comment.user.last}
+          </p>
+        </div>
+        <p className={`${style.mainText}`}>{comment.text}</p>
       </div>
     </div>
   );
