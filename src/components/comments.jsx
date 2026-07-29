@@ -1,13 +1,12 @@
-import AddComment from "./addcomment";
 import Comment from "./comment";
+import style from "./comment.module.css";
 
-const Comments = ({ comments, initials, postId }) => {
+const Comments = ({ comments }) => {
   return (
-    <section>
+    <section className={`flex col ${style.commentSection}`}>
       {comments.map((comment, index) => (
         <Comment key={index} comment={comment} />
       ))}
-      <AddComment initials={initials} postId={postId} />
     </section>
   );
 };

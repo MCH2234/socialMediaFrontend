@@ -27,8 +27,10 @@ const AddComment = ({ initials, postId }) => {
     }
   };
   return (
-    <div>
-      <div>{initials}</div>
+    <div className={`flex row ${style.container}`}>
+      <div className={`${style.pfp}`}>
+        <p>{initials}</p>
+      </div>
       <form className={`${style.addComment}`}>
         <input
           type="text"

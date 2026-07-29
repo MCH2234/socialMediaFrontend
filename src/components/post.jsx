@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useOutletContext } from "react-router";
 import { useRef, useState } from "react";
 import Comments from "./comments";
+import AddComment from "./addcomment";
 const Post = ({
   post,
   isUserPost,
@@ -173,7 +174,8 @@ const Post = ({
         />
         <p>{totalLikes} likes</p>
       </div>
-      <Comments comments={post.comments} initials={initials} postId={post.id} />
+      <Comments comments={post.comments} />
+      <AddComment initials={initials} postId={post.id} />
     </div>
   );
 };
