@@ -82,19 +82,29 @@ const Post = ({
     setLikes(() => (changedLike ? totalLikes + 1 : totalLikes - 1));
     try {
       if (!like) {
-        await fetch(`${fetchURL}/post/like/${post.id}`, {
+        const response = await fetch(`${fetchURL}/post/like/${post.id}`, {
           headers: {
             Authorization: `Bearer ${JWT}`,
           },
           method: "POST",
         });
+        const body = await response.json();
+
+        if (!response.ok) {
+          throw new Error(body.error);
+        }
       } else {
-        await fetch(`${fetchURL}/post/like/${post.id}`, {
+        const response = await fetch(`${fetchURL}/post/like/${post.id}`, {
           headers: {
             Authorization: `Bearer ${JWT}`,
           },
           method: "DELETE",
         });
+        const body = await response.json();
+
+        if (!response.ok) {
+          throw new Error(body.error);
+        }
       }
     } catch {
       setLike(!changedLike);
@@ -170,7 +180,7 @@ const Post = ({
           width="20px"
           height="20px"
         />
-        <p>{totalLikes} likes</p>
+        <p>{totalLikes} Likes</p>
       </div>
       <Comments
         postId={post.id}

@@ -34,7 +34,6 @@ const Comments = ({ comments, setComments, postId }) => {
       console.log(error);
     }
   };
-
   return (
     <section
       style={comments.length >= 1 ? { marginTop: 20 } : null}

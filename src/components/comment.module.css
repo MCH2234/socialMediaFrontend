@@ -71,3 +71,15 @@
   cursor: pointer;
   color: rgb(153, 64, 255);
 }
+.like:hover {
+  cursor: pointer;
+}
+.likes {
+  align-items: center;
+  margin-top: 5px;
+  gap: 5px;
+}
+.likesCount {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
