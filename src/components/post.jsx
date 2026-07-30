@@ -16,6 +16,7 @@ const Post = ({
   const [totalLikes, setLikes] = useState(post._count.likes);
   const [pending, setPending] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [comments, setComments] = useState(post.comments);
   const [postInfo, setPostInfo] = useState({
     date: post.date,
     text: post.text,
@@ -36,11 +37,9 @@ const Post = ({
       });
       const body = await response.json();
       if (!response.ok) {
-        console.log("here");
         throw new Error(body.error);
       } else {
         postToBeDeleted.current.remove();
-        console.log(body);
       }
     } catch (error) {
       console.log(error);
@@ -64,7 +63,6 @@ const Post = ({
         setEdit(false);
         throw new Error(body.error);
       } else {
-        console.log(body);
         setPostInfo({ ...postInfo, date: new Date() });
         setEdit(false);
       }
@@ -120,7 +118,7 @@ const Post = ({
         </div>
         {!edit ? (
           <p className={`${style.date}`}>
-            {format(postInfo.date, "do LLL HH:mmbb")}
+            {format(postInfo.date, "dd/MM HH:mmbb")}
           </p>
         ) : null}
         {isUserPost & !edit ? (
@@ -174,8 +172,16 @@ const Post = ({
         />
         <p>{totalLikes} likes</p>
       </div>
-      <Comments comments={post.comments} />
-      <AddComment initials={initials} postId={post.id} />
+      <Comments
+        postId={post.id}
+        comments={comments}
+        setComments={setComments}
+      />
+      <AddComment
+        setComments={setComments}
+        initials={initials}
+        postId={post.id}
+      />
     </div>
   );
 };

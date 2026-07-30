@@ -39,7 +39,6 @@
   margin-top: 10px;
 }
 .commentSection {
-  margin-top: 20px;
   gap: 10px;
 }
 .mainTextContainer {
@@ -54,4 +53,21 @@
 .mainText {
   margin-top: 10px;
   margin-bottom: 0px;
+}
+.userDate {
+  justify-content: center;
+  align-items: center;
+}
+.date {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: auto;
+}
+.replies {
+  color: rgb(64, 102, 255);
+  width: fit-content;
+}
+.replies:hover {
+  cursor: pointer;
+  color: rgb(153, 64, 255);
 }

@@ -1,5 +1,5 @@
 const Following = () => {
-  return <p>Browse page</p>;
+  return <p>Follow page</p>;
 };
 
 export default Following;
