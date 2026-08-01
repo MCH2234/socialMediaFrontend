@@ -2,7 +2,7 @@ import { useState } from "react";
 import style from "./comment.module.css";
 import { useOutletContext } from "react-router";
 
-const AddComment = ({ initials, postId }) => {
+const AddComment = ({ initials, setComments, comments, postId }) => {
   const [input, setInput] = useState("");
   const { fetchURL, JWT } = useOutletContext();
   const postComment = async (e) => {
@@ -18,9 +18,14 @@ const AddComment = ({ initials, postId }) => {
           comment: input,
         }),
       });
-      const body = response.json();
+      const body = await response.json();
       if (!response.ok) {
         throw new Error(body.error);
+      } else {
+        if (comments.length <= 2) {
+          setComments(comments.concat(body.comment));
+          setInput("");
+        }
       }
     } catch (error) {
       console.log(error);

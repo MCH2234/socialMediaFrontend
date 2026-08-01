@@ -16,6 +16,7 @@ const Post = ({
   const [totalLikes, setLikes] = useState(post._count.likes);
   const [pending, setPending] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [originalPostText, setOriginalPost] = useState();
   const [comments, setComments] = useState(post.comments);
   const [postInfo, setPostInfo] = useState({
     date: post.date,
@@ -48,6 +49,10 @@ const Post = ({
 
   const editPost = async (e) => {
     e.preventDefault();
+    if (postInfo.text === originalPostText) {
+      setEdit(false);
+      return;
+    }
     try {
       const response = await fetch(`${fetchURL}/post/${post.id}`, {
         headers: {
@@ -63,6 +68,7 @@ const Post = ({
         setEdit(false);
         throw new Error(body.error);
       } else {
+        console.log(body);
         setPostInfo({ ...postInfo, date: new Date() });
         setEdit(false);
       }
@@ -134,7 +140,10 @@ const Post = ({
         {isUserPost & !edit ? (
           <div className={`flex col ${style.buttonDiv}`}>
             <button
-              onClick={() => setEdit(true)}
+              onClick={() => {
+                setEdit(true);
+                setOriginalPost(postInfo.text);
+              }}
               className={`${style.edit} ${style.button}`}
             >
               Edit
@@ -189,6 +198,7 @@ const Post = ({
       />
       <AddComment
         setComments={setComments}
+        comments={comments}
         initials={initials}
         postId={post.id}
       />

@@ -1,0 +1,45 @@
+.replies {
+  gap: 10px;
+  margin-top: 10px;
+}
+.pfp {
+  border: 0.5px solid;
+  border-radius: 50px;
+  width: 30px;
+  font-size: 10px;
+  height: 30px;
+  text-align: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.name {
+  color: #9fadbb;
+}
+.date {
+  margin-left: auto;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+.reply {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+  gap: 10px;
+  align-items: center;
+}
+.mainText {
+  background-color: rgb(63, 63, 63);
+  width: calc(100% - 40px);
+  border-radius: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.text {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.likes {
+  align-items: center;
+  gap: 5px;
+}

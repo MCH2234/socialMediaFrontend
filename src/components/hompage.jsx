@@ -111,13 +111,6 @@ const HomePage = () => {
                 {posts.map((post) => (
                   <Post
                     key={post.id}
-                    // id={post.id}
-                    // user={post.user.user}
-                    // date={post.date}
-                    // text={post.text}
-                    // likes={post._count.likes}
-                    // isLikedByUser={post.isLikedByUser}
-                    // comments={post.comments}
                     post={post}
                     isUserPost={post.user.id === user.id ? true : false}
                   />
