@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router";
-import style from "./comment.module.css";
-const AddReply = ({ reply, setReply, user, commentId }) => {
+import style from "./reply.module.css";
+const AddReply = ({ reply, setReply, user, initials, commentId }) => {
   const { JWT, fetchURL } = useOutletContext();
 
   const replyToComment = async (e) => {
@@ -26,7 +26,10 @@ const AddReply = ({ reply, setReply, user, commentId }) => {
   };
   return (
     <>
-      <form className={`${style.addReply}`}>
+      <form className={`flex row ${style.addReply}`}>
+        <div className={`${style.pfp}`}>
+          <p>{initials}</p>
+        </div>
         <input
           value={reply.text}
           onChange={(e) => setReply({ ...reply, text: e.target.value })}

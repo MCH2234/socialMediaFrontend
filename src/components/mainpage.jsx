@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
+import Top from "../assets/arrowup.svg";
 import style from "./home.module.css";
 const fetchURL = "http://localhost:3214/api/v1";
 const MainPage = () => {
@@ -7,6 +8,29 @@ const MainPage = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
+  const [toTheTopVisibility, setToTheTopVisibility] = useState(false);
+
+  let navBar = useRef(null);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting === false) {
+          setToTheTopVisibility(true);
+        } else {
+          setToTheTopVisibility(false);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+
+  useEffect(() => {
+    if (loading) return;
+    observer.observe(navBar.current);
+    return () => observer.disconnect();
+  }, [loading]);
+
   let token =
     JSON.parse(localStorage.getItem("token")) !== null
       ? JSON.parse(localStorage.getItem("token"))
@@ -89,7 +113,7 @@ const MainPage = () => {
         <>
           {!error ? (
             <>
-              <nav className={`flex row ${style.nav}`}>
+              <nav ref={navBar} className={`flex row ${style.nav}`}>
                 <ul className={`flex row ${style.navItems}`}>
                   {JWT
                     ? userNavItems.map((item, index) => (
@@ -104,6 +128,21 @@ const MainPage = () => {
                       ))}
                 </ul>
               </nav>
+              {toTheTopVisibility ? (
+                <img
+                  src={Top}
+                  onClick={() =>
+                    navBar.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "end",
+                      inline: "nearest",
+                    })
+                  }
+                  width="30px"
+                  height="30px"
+                  className={`${style.toTheTop}`}
+                />
+              ) : null}
               <Outlet context={{ JWT, setJWT, fetchURL, user }} />{" "}
             </>
           ) : (

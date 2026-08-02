@@ -43,3 +43,45 @@
   align-items: center;
   gap: 5px;
 }
+.like:hover {
+  cursor: pointer;
+}
+.addCommentBtn {
+  position: absolute;
+  right: 0;
+  transform: translateX(-10%);
+  border: none;
+  background-color: transparent;
+  top: 10px;
+  color: var(--primary-color);
+}
+.addReply {
+  margin-left: 50px;
+  margin-top: 10px;
+  position: relative;
+  align-items: center;
+  gap: 10px;
+}
+.addReply input {
+  width: calc(100% - 90px);
+  background-color: var(--form-elements-bg-color);
+  border-color: var(--dark--reader-border);
+  color: var(--primary-color);
+  border: 0.1px solid;
+  border-radius: 20px;
+  padding-left: 10px;
+  padding-right: 40px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  height: fit-content;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+.addReply button {
+  position: absolute;
+  right: 0;
+  top: 7px;
+  border: none;
+  background-color: transparent;
+  color: var(--primary-color);
+}

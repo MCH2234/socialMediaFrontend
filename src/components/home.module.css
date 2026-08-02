@@ -11,3 +11,18 @@
   gap: 10px;
   margin: 60px;
 }
+.toTheTop {
+  position: fixed;
+  border-radius: 50px;
+  border: 0.5px solid black;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  top: 90vh;
+  left: 90vw;
+  z-index: 99;
+  background-color: var(--dark-reader-color);
+}
+.toTheTop:hover {
+  cursor: pointer;
+}

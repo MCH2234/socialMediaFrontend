@@ -128,6 +128,7 @@ const Comment = ({ comment }) => {
           reply={addReply}
           setReply={setAddReply}
           user={comment.user.user}
+          initials={initials}
           commentId={comment.id}
         />
       ) : null}

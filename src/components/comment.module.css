@@ -29,15 +29,6 @@
   padding: 10px;
   padding-right: 40px;
 }
-.addCommentBtn {
-  position: absolute;
-  right: 0;
-  transform: translateX(-10%);
-  border: none;
-  background-color: transparent;
-  top: 10px;
-  color: var(--primary-color);
-}
 .container {
   align-items: center;
   gap: 10px;
@@ -98,9 +89,10 @@
 }
 
 .addReply {
-  margin-left: 90px;
+  margin-left: 50px;
   margin-top: 10px;
   position: relative;
+  gap: 10px;
 }
 .addReply input {
   width: calc(100% - 50px);
@@ -113,6 +105,9 @@
   padding-right: 40px;
   padding-top: 3px;
   padding-bottom: 3px;
+  height: fit-content;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 .addReply button {
   position: absolute;

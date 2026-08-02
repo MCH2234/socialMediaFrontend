@@ -8,8 +8,10 @@ const Reply = ({ comment }) => {
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setlikeCount] = useState(comment._count.likes);
   const { JWT, fetchURL } = useOutletContext();
+
   const initials =
     comment.user.first[0].toUpperCase() + comment.user.last[0].toUpperCase();
+
   const changeLikeStatus = async (e) => {
     e.preventDefault();
     let initialLikes = likeCount;
@@ -33,6 +35,7 @@ const Reply = ({ comment }) => {
       setlikeCount(initialLikes);
     }
   };
+
   return (
     <div className={`flex row ${style.reply}`}>
       <div className={`${style.pfp}`}>
@@ -50,6 +53,7 @@ const Reply = ({ comment }) => {
         <p className={`${style.text}`}>{comment.text}</p>
         <div className={`flex row ${style.likes}`}>
           <img
+            className={`${style.like}`}
             src={like ? FullLike : Like}
             onClick={changeLikeStatus}
             width="15px"
