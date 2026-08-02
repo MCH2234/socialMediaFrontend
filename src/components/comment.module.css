@@ -29,6 +29,15 @@
   padding: 10px;
   padding-right: 40px;
 }
+.addCommentBtn {
+  position: absolute;
+  right: 0;
+  transform: translateX(-10%);
+  border: none;
+  background-color: transparent;
+  top: 10px;
+  color: var(--primary-color);
+}
 .container {
   align-items: center;
   gap: 10px;
