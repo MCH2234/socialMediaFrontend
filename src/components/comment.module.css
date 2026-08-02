@@ -123,15 +123,23 @@
   top: 3px;
   color: var(--primary-color);
 }
+.showRepliesContainer {
+  margin-left: auto;
+  gap: 10px;
+}
 .showReplies {
   background-color: transparent;
   border: none;
   color: var(--primary-color);
-  margin-left: auto;
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.showReplies:hover {
+.showReplies:hover,
+.fetchReplies:hover {
   cursor: pointer;
   color: rgb(153, 64, 255);
+}
+.fetchReplies {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }

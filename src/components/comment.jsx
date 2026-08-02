@@ -12,11 +12,13 @@ const Comment = ({ comment }) => {
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setLikeCount] = useState(comment._count.likes);
   const [showReplies, setShowReplies] = useState(false);
-  const [reply, setReply] = useState({
+  const [addReply, setAddReply] = useState({
     add: false,
     text: "",
   });
   const { fetchURL, JWT } = useOutletContext();
+
+  const fetchReplies = async () => {};
 
   const changeLikeStatus = async () => {
     let initalLikeCount = likeCount;
@@ -40,7 +42,6 @@ const Comment = ({ comment }) => {
       console.log(err);
     }
   };
-  console.log(comment);
   return (
     <div className={`flex col`}>
       <div className={`flex row ${style.comment}`}>
@@ -69,27 +70,35 @@ const Comment = ({ comment }) => {
             />
             <p className={`${style.likesCount}`}>{likeCount} Likes</p>
             <p
-              onClick={() => setReply({ ...reply, add: !reply.add })}
+              onClick={() => setAddReply({ ...addReply, add: !addReply.add })}
               className={`${style.replyButton}`}
             >
               Reply
             </p>
-            {comment.childComments.length >= 1 ? (
-              <p
-                className={`${style.showReplies}`}
-                onClick={() => setShowReplies(!showReplies)}
-              >
-                {showReplies ? "Hide replies" : "Show replies"}
-              </p>
-            ) : null}
+            <div className={`flex row ${style.showRepliesContainer}`}>
+              {comment.reply_count >= 1 ? (
+                <p className={`${style.fetchReplies}`}>
+                  See {comment.reply_count}{" "}
+                  {comment.reply_count === 1 ? "reply" : "replies"}
+                </p>
+              ) : null}
+              {comment.reply_count >= 1 ? (
+                <p
+                  className={`${style.showReplies}`}
+                  onClick={() => setShowReplies(!showReplies)}
+                >
+                  {showReplies ? "Hide replies" : "Show replies"}
+                </p>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
       {showReplies ? <Replies replies={comment.childComments} /> : null}
-      {reply.add ? (
+      {addReply.add ? (
         <AddReply
-          reply={reply}
-          setReply={setReply}
+          reply={addReply}
+          setReply={setAddReply}
           user={comment.user.user}
           commentId={comment.id}
         />

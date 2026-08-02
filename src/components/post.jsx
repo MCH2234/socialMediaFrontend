@@ -22,10 +22,37 @@ const Post = ({
     date: post.date,
     text: post.text,
   });
+  const setInitialCursor =
+    comments.length >= 1 ? comments[comments.length - 1].id : null;
+  const [commentCursor, setCommentCursor] = useState(setInitialCursor);
   let initials =
     post.user.first[0].toUpperCase() + post.user.last[0].toUpperCase();
 
   const postToBeDeleted = useRef(null);
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `${fetchURL}/post/${post.id}/comments?cursor=${commentCursor}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JWT}`,
+          },
+          method: "GET",
+        },
+      );
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        const mergeComments = comments.concat(body.comments);
+        setComments(mergeComments);
+        setCommentCursor(body.cursor);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const deletePost = async (e) => {
     e.preventDefault();
@@ -68,7 +95,6 @@ const Post = ({
         setEdit(false);
         throw new Error(body.error);
       } else {
-        console.log(body);
         setPostInfo({ ...postInfo, date: new Date() });
         setEdit(false);
       }
@@ -192,9 +218,9 @@ const Post = ({
         <p>{totalLikes} Likes</p>
       </div>
       <Comments
-        postId={post.id}
         comments={comments}
-        setComments={setComments}
+        fetchComments={fetchComments}
+        cursor={commentCursor}
       />
       <AddComment
         setComments={setComments}

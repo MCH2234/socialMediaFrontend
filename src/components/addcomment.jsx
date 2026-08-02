@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import style from "./comment.module.css";
 import { useOutletContext } from "react-router";
 
 const AddComment = ({ initials, setComments, comments, postId }) => {
   const [input, setInput] = useState("");
   const { fetchURL, JWT } = useOutletContext();
+  const commentInput = useRef(null);
   const postComment = async (e) => {
     e.preventDefault();
     try {
@@ -22,10 +23,12 @@ const AddComment = ({ initials, setComments, comments, postId }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        if (comments.length <= 2) {
-          setComments(comments.concat(body.comment));
-          setInput("");
-        }
+        let copyComments = [...comments];
+        copyComments.unshift(body.comment);
+        setComments(copyComments);
+
+        setInput("");
+        commentInput.current.blur();
       }
     } catch (error) {
       console.log(error);
@@ -43,6 +46,7 @@ const AddComment = ({ initials, setComments, comments, postId }) => {
           placeholder="Add a comment..."
           value={input}
           autoComplete="off"
+          ref={commentInput}
           onChange={(e) => setInput(e.target.value)}
         />
         {input !== "" ? (
