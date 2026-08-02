@@ -16,9 +16,32 @@ const Comment = ({ comment }) => {
     add: false,
     text: "",
   });
+  const [replies, setReplies] = useState([]);
   const { fetchURL, JWT } = useOutletContext();
 
-  const fetchReplies = async () => {};
+  const fetchReplies = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `${fetchURL}/comment/replies/${comment.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JWT}`,
+          },
+          method: "GET",
+        },
+      );
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        setReplies(body.replies.childComments);
+        setShowReplies(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const changeLikeStatus = async () => {
     let initalLikeCount = likeCount;
@@ -75,26 +98,31 @@ const Comment = ({ comment }) => {
             >
               Reply
             </p>
-            <div className={`flex row ${style.showRepliesContainer}`}>
-              {comment.reply_count >= 1 ? (
-                <p className={`${style.fetchReplies}`}>
-                  See {comment.reply_count}{" "}
-                  {comment.reply_count === 1 ? "reply" : "replies"}
-                </p>
-              ) : null}
-              {comment.reply_count >= 1 ? (
-                <p
-                  className={`${style.showReplies}`}
-                  onClick={() => setShowReplies(!showReplies)}
-                >
-                  {showReplies ? "Hide replies" : "Show replies"}
-                </p>
-              ) : null}
-            </div>
+            {comment.reply_count >= 1 ? (
+              <div className={`flex row ${style.showRepliesContainer}`}>
+                {replies.length === 0 ? (
+                  <p onClick={fetchReplies} className={`${style.fetchReplies}`}>
+                    See {comment.reply_count}{" "}
+                    {comment.reply_count === 1 ? "reply" : "replies"}
+                  </p>
+                ) : (
+                  <p
+                    className={`${style.showReplies}`}
+                    onClick={() => setShowReplies(!showReplies)}
+                  >
+                    {replies.length !== 0
+                      ? showReplies
+                        ? "Hide replies"
+                        : "Show replies"
+                      : null}
+                  </p>
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
-      {showReplies ? <Replies replies={comment.childComments} /> : null}
+      {showReplies ? <Replies replies={replies} /> : null}
       {addReply.add ? (
         <AddReply
           reply={addReply}
