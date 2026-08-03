@@ -16,7 +16,10 @@ const Comment = ({ comment }) => {
     add: false,
     text: "",
   });
-  const [replies, setReplies] = useState([]);
+  const [replies, setReplies] = useState({
+    shouldFetchReplies: true,
+    replies: [],
+  });
   const { fetchURL, JWT } = useOutletContext();
 
   const fetchReplies = async (e) => {
@@ -35,7 +38,10 @@ const Comment = ({ comment }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        setReplies(body.replies.childComments);
+        setReplies({
+          shouldFetchReplies: false,
+          replies: body.replies.childComments,
+        });
         setShowReplies(true);
       }
     } catch (err) {
@@ -100,9 +106,13 @@ const Comment = ({ comment }) => {
             </p>
             {comment.reply_count >= 1 ? (
               <div className={`flex row ${style.showRepliesContainer}`}>
-                {replies.length === 0 ? (
+                {replies.shouldFetchReplies ? (
                   <p onClick={fetchReplies} className={`${style.fetchReplies}`}>
-                    See {comment.reply_count}{" "}
+                    See{" "}
+                    {!replies.shouldFetchReplies && replies.replies.length >= 1
+                      ? "more "
+                      : null}{" "}
+                    {comment.reply_count}{" "}
                     {comment.reply_count === 1 ? "reply" : "replies"}
                   </p>
                 ) : (
@@ -122,11 +132,13 @@ const Comment = ({ comment }) => {
           </div>
         </div>
       </div>
-      {showReplies ? <Replies replies={replies} /> : null}
+      {showReplies ? <Replies replies={replies.replies} /> : null}
       {addReply.add ? (
         <AddReply
           reply={addReply}
-          setReply={setAddReply}
+          replies={replies}
+          setAddReply={setAddReply}
+          setReplies={setReplies}
           user={comment.user.user}
           initials={initials}
           commentId={comment.id}

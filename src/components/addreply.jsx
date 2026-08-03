@@ -1,7 +1,32 @@
 import { useOutletContext } from "react-router";
 import style from "./reply.module.css";
-const AddReply = ({ reply, setReply, user, initials, commentId }) => {
+import { useEffect, useRef } from "react";
+const AddReply = ({
+  reply,
+  replies,
+  setAddReply,
+  setReplies,
+  user,
+  initials,
+  commentId,
+}) => {
+  const replyField = useRef(null);
   const { JWT, fetchURL } = useOutletContext();
+
+  useEffect(() => {
+    replyField.current.focus();
+  }, []);
+
+  const addReplyLocally = (value) => {
+    let newRepliesArr = [...replies.replies];
+    if (newRepliesArr.length >= 1) {
+      newRepliesArr.unshift(value);
+    } else {
+      newRepliesArr.push(value);
+    }
+    setAddReply({ text: "", add: false });
+    setReplies({ ...replies, replies: newRepliesArr });
+  };
 
   const replyToComment = async (e) => {
     e.preventDefault();
@@ -18,7 +43,7 @@ const AddReply = ({ reply, setReply, user, initials, commentId }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        setReply({ text: "", add: false });
+        addReplyLocally(body.reply);
       }
     } catch (error) {
       console.log(error);
@@ -31,8 +56,9 @@ const AddReply = ({ reply, setReply, user, initials, commentId }) => {
           <p>{initials}</p>
         </div>
         <input
+          ref={replyField}
           value={reply.text}
-          onChange={(e) => setReply({ ...reply, text: e.target.value })}
+          onChange={(e) => setAddReply({ ...reply, text: e.target.value })}
           type="text"
           name="reply"
           placeholder={`Reply to ${user}...`}

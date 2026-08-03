@@ -19,9 +19,10 @@
   width: 30px;
   text-align: center;
   top: 90vh;
-  left: 90vw;
+  left: 95vw;
   z-index: 99;
   background-color: var(--dark-reader-color);
+  transform: translateX(-100%);
 }
 .toTheTop:hover {
   cursor: pointer;
