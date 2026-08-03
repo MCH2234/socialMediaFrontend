@@ -22,6 +22,21 @@ const Comment = ({ comment }) => {
   });
   const { fetchURL, JWT } = useOutletContext();
 
+  const addReplyLocally = (value) => {
+    let newRepliesArr = [...replies.replies];
+    if (newRepliesArr.length >= 1) {
+      newRepliesArr.unshift(value);
+    } else {
+      newRepliesArr.push(value);
+    }
+    setAddReply({ text: "", add: false });
+    setReplies({
+      shouldFetchReplies: comment.reply_count >= 1 ? true : false,
+      replies: newRepliesArr,
+    });
+    setShowReplies(true);
+  };
+
   const fetchReplies = async (e) => {
     e.preventDefault();
     try {
@@ -104,12 +119,12 @@ const Comment = ({ comment }) => {
             >
               Reply
             </p>
-            {comment.reply_count >= 1 ? (
+            {comment.reply_count >= 1 || replies.replies.length >= 1 ? (
               <div className={`flex row ${style.showRepliesContainer}`}>
                 {replies.shouldFetchReplies ? (
                   <p onClick={fetchReplies} className={`${style.fetchReplies}`}>
                     See{" "}
-                    {!replies.shouldFetchReplies && replies.replies.length >= 1
+                    {replies.shouldFetchReplies && replies.replies.length >= 1
                       ? "more "
                       : null}{" "}
                     {comment.reply_count}{" "}
@@ -136,9 +151,8 @@ const Comment = ({ comment }) => {
       {addReply.add ? (
         <AddReply
           reply={addReply}
-          replies={replies}
           setAddReply={setAddReply}
-          setReplies={setReplies}
+          addReplyLocally={addReplyLocally}
           user={comment.user.user}
           initials={initials}
           commentId={comment.id}

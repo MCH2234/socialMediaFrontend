@@ -3,9 +3,8 @@ import style from "./reply.module.css";
 import { useEffect, useRef } from "react";
 const AddReply = ({
   reply,
-  replies,
   setAddReply,
-  setReplies,
+  addReplyLocally,
   user,
   initials,
   commentId,
@@ -16,17 +15,6 @@ const AddReply = ({
   useEffect(() => {
     replyField.current.focus();
   }, []);
-
-  const addReplyLocally = (value) => {
-    let newRepliesArr = [...replies.replies];
-    if (newRepliesArr.length >= 1) {
-      newRepliesArr.unshift(value);
-    } else {
-      newRepliesArr.push(value);
-    }
-    setAddReply({ text: "", add: false });
-    setReplies({ ...replies, replies: newRepliesArr });
-  };
 
   const replyToComment = async (e) => {
     e.preventDefault();
