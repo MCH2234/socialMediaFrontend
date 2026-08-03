@@ -31,7 +31,12 @@ const Comment = ({ comment }) => {
     }
     setAddReply({ text: "", add: false });
     setReplies({
-      shouldFetchReplies: comment.reply_count >= 1 ? true : false,
+      shouldFetchReplies:
+        replies.shouldFetchReplies === false
+          ? false
+          : comment.reply_count >= 1
+            ? true
+            : false,
       replies: newRepliesArr,
     });
     setShowReplies(true);
