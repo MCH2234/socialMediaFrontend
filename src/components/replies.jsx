@@ -4,8 +4,8 @@ import style from "./reply.module.css";
 const Replies = ({ replies }) => {
   return (
     <section className={`flex col ${style.replies}`}>
-      {replies.map((reply) => (
-        <Reply key={reply.id} comment={reply} />
+      {replies.map((reply, index) => (
+        <Reply key={reply.id} index={index} comment={reply} />
       ))}
     </section>
   );

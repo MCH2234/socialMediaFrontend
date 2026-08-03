@@ -2,12 +2,27 @@ import style from "./reply.module.css";
 import Like from "../assets/like.svg";
 import FullLike from "../assets/likefull.svg";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
-const Reply = ({ comment }) => {
+const Reply = ({ comment, index }) => {
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setlikeCount] = useState(comment._count.likes);
   const { JWT, fetchURL } = useOutletContext();
+  const focusOnNewReply = useRef(null);
+
+  function isElementInView(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.top >= 0 && rect.bottom <= window.innerHeight;
+  }
+
+  useEffect(() => {
+    if (index === 0) {
+      if (!isElementInView(focusOnNewReply.current)) {
+        focusOnNewReply.current.focus();
+        // or newReplyRef.current.focus() if it's focusable and you want keyboard focus
+      }
+    }
+  }, [index]);
 
   const initials =
     comment.user.first[0].toUpperCase() + comment.user.last[0].toUpperCase();
@@ -41,7 +56,11 @@ const Reply = ({ comment }) => {
       <div className={`${style.pfp}`}>
         <p>{initials}</p>
       </div>
-      <div className={`flex col ${style.mainText}`}>
+      <div
+        tabIndex="0"
+        ref={focusOnNewReply}
+        className={`flex col ${style.mainText}`}
+      >
         <div className={`flex row ${style.dateUser}`}>
           <p className={`${style.name} no-margin`}>
             {comment.user.first} {comment.user.last}
