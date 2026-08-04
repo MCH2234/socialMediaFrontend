@@ -27,3 +27,6 @@
 .toTheTop:hover {
   cursor: pointer;
 }
+.error {
+  color: rgb(234, 31, 31);
+}

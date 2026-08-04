@@ -12,6 +12,7 @@ const Post = ({ post, isUserPost }) => {
   const [like, setLike] = useState(post.isLikedByUser);
   const [totalLikes, setLikes] = useState(post._count.likes);
   const [pending, setPending] = useState(false);
+  const [errors, setErrors] = useState([]);
   const [edit, setEdit] = useState(false);
   const [originalPostText, setOriginalPost] = useState();
   const [comments, setComments] = useState(post.comments);

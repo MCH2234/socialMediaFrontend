@@ -5,12 +5,14 @@ import { useRef } from "react";
 import style from "./home.module.css";
 import Post from "./post";
 import AddPost from "./addpost";
+import Errors from "./errors";
 
 const HomePage = () => {
   const { fetchURL, JWT, user } = useOutletContext();
 
   const [cursor, setCursor] = useState();
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState([]);
   const [posts, setPosts] = useState();
   // const [followRequests, setFollowRequests] = useState([]);
 
@@ -105,7 +107,15 @@ const HomePage = () => {
     <>
       {!loading ? (
         <main>
-          <AddPost posts={posts} setPosts={setPosts} />
+          <AddPost posts={posts} setPosts={setPosts} setErrors={setErrors}>
+            {errors ? (
+              <ul className={`flex col ${style.errors}`}>
+                {errors.map((error, index) => (
+                  <Errors key={index} msg={error} />
+                ))}
+              </ul>
+            ) : null}
+          </AddPost>
           <section className={`flex col ${style.posts}`}>
             {posts.length >= 1 ? (
               <>

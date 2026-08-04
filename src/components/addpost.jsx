@@ -1,11 +1,15 @@
 import { useState } from "react";
 import style from "./post.module.css";
 import { useOutletContext } from "react-router";
-const AddPost = ({ posts, setPosts }) => {
+const AddPost = ({ posts, setPosts, setErrors, children }) => {
   const [input, setInput] = useState("");
   const { JWT, fetchURL } = useOutletContext();
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (input === "") {
+      setErrors(["Post can't be empty"]);
+      return;
+    }
     try {
       const response = await fetch(`${fetchURL}/post`, {
         headers: {
@@ -19,9 +23,9 @@ const AddPost = ({ posts, setPosts }) => {
       });
       const body = await response.json();
       if (!response.ok) {
+        setErrors(JSON.parse(body.error));
         throw new Error("An error occured");
       } else {
-        console.log(body.post);
         setPosts([body.post, ...posts]);
       }
     } catch (error) {
@@ -30,10 +34,14 @@ const AddPost = ({ posts, setPosts }) => {
   };
   return (
     <form className={`flex col ${style.addPostForm}`}>
+      {children}
       <textarea
         className={`${style.add}`}
         placeholder="What's on your mind?"
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e) => {
+          if (e.target.value !== "") setErrors();
+          setInput(e.target.value);
+        }}
         value={input}
       ></textarea>
       <button onClick={onSubmit}>Submit</button>
