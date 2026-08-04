@@ -1,16 +1,13 @@
 import style from "./post.module.css";
 import Like from "../assets/like.svg";
 import LikeRed from "../assets/likefull.svg";
+import Follow from "../assets/sendfollow.svg";
 import { format } from "date-fns";
 import { useOutletContext } from "react-router";
 import { useRef, useState } from "react";
 import Comments from "./comments";
 import AddComment from "./addcomment";
-const Post = ({
-  post,
-  isUserPost,
-  // comments,
-}) => {
+const Post = ({ post, isUserPost }) => {
   const { JWT, fetchURL } = useOutletContext();
   const [like, setLike] = useState(post.isLikedByUser);
   const [totalLikes, setLikes] = useState(post._count.likes);
@@ -22,13 +19,38 @@ const Post = ({
     date: post.date,
     text: post.text,
   });
+
+  const postToBeDeleted = useRef(null);
+  const removeFollowIcon = useRef(null);
+
   const setInitialCursor =
     comments.length >= 1 ? comments[comments.length - 1].id : null;
   const [commentCursor, setCommentCursor] = useState(setInitialCursor);
+
   let initials =
     post.user.first[0].toUpperCase() + post.user.last[0].toUpperCase();
 
-  const postToBeDeleted = useRef(null);
+  const followUser = async () => {
+    try {
+      const response = await fetch(
+        `${fetchURL}/user/follow/request/${post.user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JWT}`,
+          },
+          method: "POST",
+        },
+      );
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        removeFollowIcon.current.remove();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchComments = async () => {
     try {
@@ -145,6 +167,7 @@ const Post = ({
       setPending(false);
     }
   };
+
   return (
     <div ref={postToBeDeleted} className={`flex col ${style.post}`}>
       {/* <span className={`${style.experiment}`}></span> */}
@@ -158,6 +181,16 @@ const Post = ({
           </p>
           <p className="no-margin">@{post.user.user}</p>
         </div>
+        {!post.userFollowsAuthor ? (
+          <img
+            ref={removeFollowIcon}
+            onClick={followUser}
+            className={`${style.follow}`}
+            src={Follow}
+            height="25px"
+            width="25px"
+          />
+        ) : null}
         {!edit ? (
           <p className={`${style.date}`}>
             {format(postInfo.date, "dd/MM HH:mmbb")}

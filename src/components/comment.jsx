@@ -128,11 +128,10 @@ const Comment = ({ comment }) => {
               <div className={`flex row ${style.showRepliesContainer}`}>
                 {replies.shouldFetchReplies ? (
                   <p onClick={fetchReplies} className={`${style.fetchReplies}`}>
-                    See{" "}
+                    See {comment.reply_count}{" "}
                     {replies.shouldFetchReplies && replies.replies.length >= 1
                       ? "more "
                       : null}{" "}
-                    {comment.reply_count}{" "}
                     {comment.reply_count === 1 ? "reply" : "replies"}
                   </p>
                 ) : (

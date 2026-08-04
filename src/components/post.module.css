@@ -18,6 +18,13 @@
   position: relative;
   margin-bottom: 10px;
   margin-top: 5px;
+  align-items: center;
+}
+.follow {
+  margin-left: 10px;
+}
+.follow:hover {
+  cursor: pointer;
 }
 .button {
   position: absolute;
