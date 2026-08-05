@@ -8,6 +8,19 @@ const AddComment = ({ initials, setComments, comments, postId }) => {
   const commentInput = useRef(null);
   const postComment = async (e) => {
     e.preventDefault();
+    if (input === "") {
+      if (commentInput.current.className === `${style.addCommentInput}`) {
+        commentInput.current.className = `${style.addCommentInput} ${style.errorAnimation}`;
+      } else if (
+        commentInput.current.className ===
+        `${style.addCommentInput} ${style.errorAnimation}`
+      ) {
+        commentInput.current.className = `${style.addCommentInput}`;
+        commentInput.current.offsetWidth;
+        commentInput.current.className = `${style.addCommentInput} ${style.errorAnimation}`;
+      }
+      return;
+    }
     try {
       const response = await fetch(`${fetchURL}/post/${postId}/comments`, {
         headers: {
@@ -39,20 +52,28 @@ const AddComment = ({ initials, setComments, comments, postId }) => {
       <div className={`${style.pfp}`}>
         <p>{initials}</p>
       </div>
-      <form className={`${style.addComment}`}>
+      <form onSubmit={postComment} className={`${style.addComment}`}>
         <input
           type="text"
           name="comment"
           placeholder="Add a comment..."
+          className={`${style.addCommentInput}`}
           value={input}
           autoComplete="off"
           ref={commentInput}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            if (
+              e.target.value !== "" &&
+              commentInput.current.className ===
+                `${style.addCommentInput} ${style.errorAnimation}`
+            ) {
+              commentInput.current.className = `${style.addCommentInput}`;
+            }
+            setInput(e.target.value);
+          }}
         />
         {input !== "" ? (
-          <button onClick={postComment} className={`${style.addCommentBtn}`}>
-            Post
-          </button>
+          <button className={`${style.addCommentBtn}`}>Post</button>
         ) : null}
       </form>
     </div>

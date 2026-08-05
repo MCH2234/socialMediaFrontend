@@ -19,7 +19,7 @@
   position: relative;
   width: 100%;
 }
-.addComment input {
+.addCommentInput {
   width: calc(100% - 50px);
   background-color: var(--form-elements-bg-color);
   border-color: var(--dark--reader-border);
@@ -146,4 +146,27 @@
 .fetchReplies {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+.errorAnimation {
+  animation-duration: 300ms;
+  animation-name: error;
+  outline: none;
+  border-color: red;
+}
+@keyframes error {
+  0% {
+    transform: translateX(3px);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }

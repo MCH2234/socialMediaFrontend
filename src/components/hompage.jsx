@@ -12,7 +12,7 @@ const HomePage = () => {
 
   const [cursor, setCursor] = useState();
   const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState();
   const [posts, setPosts] = useState();
   // const [followRequests, setFollowRequests] = useState([]);
 

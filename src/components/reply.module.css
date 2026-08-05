@@ -62,7 +62,7 @@
   align-items: center;
   gap: 10px;
 }
-.addReply input {
+.addReplyInput {
   width: calc(100% - 90px);
   background-color: var(--form-elements-bg-color);
   border-color: var(--dark--reader-border);
@@ -84,4 +84,27 @@
   border: none;
   background-color: transparent;
   color: var(--primary-color);
+}
+.errorAnimation {
+  animation-duration: 300ms;
+  animation-name: error;
+  outline: none;
+  border-color: red;
+}
+@keyframes error {
+  0% {
+    transform: translateX(3px);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }

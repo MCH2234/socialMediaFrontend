@@ -18,6 +18,19 @@ const AddReply = ({
 
   const replyToComment = async (e) => {
     e.preventDefault();
+    if (reply.text === "") {
+      if (replyField.current.className === `${style.addReplyInput}`) {
+        replyField.current.className = `${style.addReplyInput} ${style.errorAnimation}`;
+      } else if (
+        replyField.current.className ===
+        `${style.addReplyInput} ${style.errorAnimation}`
+      ) {
+        replyField.current.className = `${style.addReplyInput}`;
+        replyField.current.offsetWidth;
+        replyField.current.className = `${style.addReplyInput} ${style.errorAnimation}`;
+      }
+      return;
+    }
     try {
       const response = await fetch(`${fetchURL}/comment/${commentId}`, {
         headers: {
@@ -39,23 +52,31 @@ const AddReply = ({
   };
   return (
     <>
-      <form className={`flex row ${style.addReply}`}>
+      <form onSubmit={replyToComment} className={`flex row ${style.addReply}`}>
         <div className={`${style.pfp}`}>
           <p>{initials}</p>
         </div>
         <input
           ref={replyField}
           value={reply.text}
-          onChange={(e) => setAddReply({ ...reply, text: e.target.value })}
+          onChange={(e) => {
+            if (
+              reply.text !== "" &&
+              replyField.current.className ===
+                `${style.addReplyInput} ${style.errorAnimation}`
+            ) {
+              replyField.current.className = `${style.addReplyInput}`;
+            }
+            setAddReply({ ...reply, text: e.target.value });
+          }}
+          className={`${style.addReplyInput}`}
           type="text"
           name="reply"
           placeholder={`Reply to ${user}...`}
           autoComplete="off"
         />
         {reply.text !== "" ? (
-          <button onClick={replyToComment} className={`${style.addCommentBtn}`}>
-            Reply
-          </button>
+          <button className={`${style.addCommentBtn}`}>Reply</button>
         ) : null}
       </form>
     </>
