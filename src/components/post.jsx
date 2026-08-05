@@ -2,6 +2,7 @@ import style from "./post.module.css";
 import Like from "../assets/like.svg";
 import LikeRed from "../assets/likefull.svg";
 import Follow from "../assets/sendfollow.svg";
+import Options from "../assets/more.svg";
 import { format } from "date-fns";
 import { useOutletContext } from "react-router";
 import { useRef, useState } from "react";
@@ -14,12 +15,15 @@ const Post = ({ post, isUserPost }) => {
   const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState([]);
   const [edit, setEdit] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [originalPostText, setOriginalPost] = useState();
   const [comments, setComments] = useState(post.comments);
   const [postInfo, setPostInfo] = useState({
     date: post.date,
     text: post.text,
   });
+
+  const editComment = useRef(null);
 
   const postToBeDeleted = useRef(null);
   const removeFollowIcon = useRef(null);
@@ -99,6 +103,18 @@ const Post = ({ post, isUserPost }) => {
 
   const editPost = async (e) => {
     e.preventDefault();
+    if (postInfo.text === "") {
+      if (editComment.current.className === `${style.editTextArea}`) {
+        editComment.current.className = `${style.editTextArea} errorAnimation`;
+      } else if (
+        editComment.current.className === `${style.editTextArea} errorAnimation`
+      ) {
+        editComment.current.className = `${style.editTextArea}`;
+        editComment.current.offsetWidth;
+        editComment.current.className = `${style.editTextArea} errorAnimation`;
+      }
+      return;
+    }
     if (postInfo.text === originalPostText) {
       setEdit(false);
       return;
@@ -190,45 +206,68 @@ const Post = ({ post, isUserPost }) => {
             src={Follow}
             height="25px"
             width="25px"
+            tabIndex={0}
           />
         ) : null}
-        {!edit ? (
-          <p className={`${style.date}`}>
-            {format(postInfo.date, "dd/MM HH:mmbb")}
-          </p>
-        ) : null}
-        {isUserPost & !edit ? (
-          <div className={`flex col ${style.buttonDiv}`}>
-            <button
-              onClick={() => {
-                setEdit(true);
-                setOriginalPost(postInfo.text);
-              }}
-              className={`${style.edit} ${style.button}`}
-            >
-              Edit
-            </button>
-            <button
-              onClick={deletePost}
-              className={`${style.delete} ${style.button}`}
-            >
-              Delete
-            </button>
-          </div>
-        ) : null}
+        <div className={`flex row ${style.left}`}>
+          {isUserPost && !edit ? (
+            <div className={`${style.relative}`}>
+              <img
+                src={Options}
+                width="20px"
+                height="20px"
+                className={`${style.options}`}
+                onClick={() => setShowOptions(!showOptions)}
+                tabIndex={0}
+              />
+              {showOptions ? (
+                <div className={`flex col ${style.buttonDiv}`}>
+                  <button
+                    onClick={() => {
+                      setEdit(true);
+                      setShowOptions(false);
+                      setOriginalPost(postInfo.text);
+                    }}
+                    className={`${style.edit} ${style.button}`}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={deletePost}
+                    className={`${style.delete} ${style.button}`}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : null}{" "}
+            </div>
+          ) : null}
+          {!edit ? <p>{format(postInfo.date, "dd/MM HH:mmbb")}</p> : null}
+        </div>
       </div>
       {!edit ? (
         <p className={`${style.postText}`}>{postInfo.text}</p>
       ) : (
-        <form className={`flex col ${style.editForm}`}>
+        <form onSubmit={editPost} className={`flex col ${style.editForm}`}>
           <textarea
             placeholder="Edit your comment"
             value={postInfo.text}
             name={"edit"}
-            onChange={(e) => setPostInfo({ ...postInfo, text: e.target.value })}
+            onChange={(e) => {
+              if (
+                editComment.current.className ===
+                  `${style.editTextArea} errorAnimation` &&
+                postInfo.text !== ""
+              ) {
+                editComment.current.className = `${style.editTextArea}`;
+              }
+              setPostInfo({ ...postInfo, text: e.target.value });
+            }}
+            className={`${style.editTextArea}`}
+            ref={editComment}
           ></textarea>
           <div className={`flex row ${style.editBtn}`}>
-            <button onClick={editPost}>Edit</button>
+            <button type="submit">Edit</button>
             <button
               onClick={() => {
                 setEdit(false);
