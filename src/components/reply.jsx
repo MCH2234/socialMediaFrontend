@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import Options from "../assets/more.svg";
-const Reply = ({ comment, index, isUserReply }) => {
+const Reply = ({ comment, index, isUserReply, setReplies }) => {
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setlikeCount] = useState(comment._count.likes);
   const [replyInfo, setReplyInfo] = useState({
@@ -82,7 +82,7 @@ const Reply = ({ comment, index, isUserReply }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        replyToBeDeleted.current.remove();
+        setReplies(index);
       }
     } catch (err) {
       console.log(err);

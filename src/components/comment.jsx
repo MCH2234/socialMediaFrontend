@@ -116,6 +116,13 @@ const Comment = ({ comment, isUserComment }) => {
     setShowReplies(true);
   };
 
+  const deleteReplyLocally = (index) => {
+    const filterReplies = replies.replies.filter(
+      (reply) => reply !== replies.replies[index],
+    );
+    setReplies({ ...replies, replies: filterReplies });
+  };
+
   const fetchReplies = async (e) => {
     e.preventDefault();
     try {
@@ -165,6 +172,8 @@ const Comment = ({ comment, isUserComment }) => {
       console.log(err);
     }
   };
+
+  console.log(replies.replies.length);
 
   return (
     <div ref={commentToBeDeleted} className={`flex col`}>
@@ -269,7 +278,9 @@ const Comment = ({ comment, isUserComment }) => {
             >
               Reply
             </p>
-            {comment.reply_count >= 1 || replies.replies.length >= 1 ? (
+            {(comment.reply_count >= 1 &&
+              replies.shouldFetchReplies === true) ||
+            replies.replies.length >= 1 ? (
               <div className={`flex row ${style.showRepliesContainer}`}>
                 {replies.shouldFetchReplies ? (
                   <p onClick={fetchReplies} className={`${style.fetchReplies}`}>
@@ -296,7 +307,9 @@ const Comment = ({ comment, isUserComment }) => {
           </div>
         </div>
       </div>
-      {showReplies ? <Replies replies={replies.replies} /> : null}
+      {showReplies ? (
+        <Replies replies={replies.replies} setReplies={deleteReplyLocally} />
+      ) : null}
       {addReply.add ? (
         <AddReply
           reply={addReply}
