@@ -23,7 +23,7 @@ const Post = ({ post, isUserPost }) => {
     text: post.text,
   });
 
-  const editComment = useRef(null);
+  const editPostContent = useRef(null);
 
   const postToBeDeleted = useRef(null);
   const removeFollowIcon = useRef(null);
@@ -104,14 +104,15 @@ const Post = ({ post, isUserPost }) => {
   const editPost = async (e) => {
     e.preventDefault();
     if (postInfo.text === "") {
-      if (editComment.current.className === `${style.editTextArea}`) {
-        editComment.current.className = `${style.editTextArea} errorAnimation`;
+      if (editPostContent.current.className === `${style.editTextArea}`) {
+        editPostContent.current.className = `${style.editTextArea} errorAnimation`;
       } else if (
-        editComment.current.className === `${style.editTextArea} errorAnimation`
+        editPostContent.current.className ===
+        `${style.editTextArea} errorAnimation`
       ) {
-        editComment.current.className = `${style.editTextArea}`;
-        editComment.current.offsetWidth;
-        editComment.current.className = `${style.editTextArea} errorAnimation`;
+        editPostContent.current.className = `${style.editTextArea}`;
+        editPostContent.current.offsetWidth;
+        editPostContent.current.className = `${style.editTextArea} errorAnimation`;
       }
       return;
     }
@@ -250,21 +251,21 @@ const Post = ({ post, isUserPost }) => {
       ) : (
         <form onSubmit={editPost} className={`flex col ${style.editForm}`}>
           <textarea
-            placeholder="Edit your comment"
+            placeholder="Edit your post"
             value={postInfo.text}
             name={"edit"}
             onChange={(e) => {
               if (
-                editComment.current.className ===
+                editPostContent.current.className ===
                   `${style.editTextArea} errorAnimation` &&
                 postInfo.text !== ""
               ) {
-                editComment.current.className = `${style.editTextArea}`;
+                editPostContent.current.className = `${style.editTextArea}`;
               }
               setPostInfo({ ...postInfo, text: e.target.value });
             }}
             className={`${style.editTextArea}`}
-            ref={editComment}
+            ref={editPostContent}
           ></textarea>
           <div className={`flex row ${style.editBtn}`}>
             <button type="submit">Edit</button>

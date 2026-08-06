@@ -1,12 +1,13 @@
 import style from "./comment.module.css";
 import Like from "../assets/like.svg";
 import FullLike from "../assets/likefull.svg";
+import Options from "../assets/more.svg";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useOutletContext } from "react-router";
 import AddReply from "./addreply";
 import Replies from "./replies";
-const Comment = ({ comment }) => {
+const Comment = ({ comment, isUserComment }) => {
   const initials =
     comment.user.first[0].toUpperCase() + comment.user.last[0].toUpperCase();
   const [like, setLike] = useState(comment.isLikedByUser);
@@ -20,7 +21,80 @@ const Comment = ({ comment }) => {
     shouldFetchReplies: true,
     replies: [],
   });
+  const [commentInfo, setCommentInfo] = useState({
+    date: comment.date,
+    text: comment.text,
+  });
+  const [edit, setEdit] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+  const [originalComment, setOriginalComment] = useState(comment.text);
+
   const { fetchURL, JWT } = useOutletContext();
+
+  const editCommentContent = useRef(null);
+  const commentToBeDeleted = useRef(null);
+
+  const deleteComment = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${fetchURL}/comment/${comment.id}`, {
+        headers: { Authorization: `Bearer ${JWT}` },
+        method: "DELETE",
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        commentToBeDeleted.current.remove();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const editComment = async (e) => {
+    e.preventDefault();
+    if (commentInfo.text === "") {
+      if (editCommentContent.current.className === `${style.editTextArea}`) {
+        editCommentContent.current.className = `${style.editTextArea} errorAnimation`;
+      } else if (
+        editCommentContent.current.className ===
+        `${style.editTextArea} errorAnimation`
+      ) {
+        editCommentContent.current.className = `${style.editTextArea}`;
+        editCommentContent.current.offsetWidth;
+        editCommentContent.current.className = `${style.editTextArea} errorAnimation`;
+      }
+      return;
+    }
+    if (commentInfo.text === originalComment) {
+      setEdit(false);
+      return;
+    }
+    try {
+      const response = await fetch(`${fetchURL}/comment/${comment.id}`, {
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+        body: JSON.stringify({
+          comment: commentInfo.text,
+        }),
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        setEdit(false);
+        setCommentInfo({ text: comment.text, date: comment.date });
+        throw new Error(body.error);
+      } else {
+        setEdit(false);
+        setCommentInfo({ ...commentInfo, date: new Date() });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const addReplyLocally = (value) => {
     let newRepliesArr = [...replies.replies];
@@ -91,8 +165,9 @@ const Comment = ({ comment }) => {
       console.log(err);
     }
   };
+
   return (
-    <div className={`flex col`}>
+    <div ref={commentToBeDeleted} className={`flex col`}>
       <div className={`flex row ${style.comment}`}>
         <div className={`${style.pfp}`}>
           <p>{initials}</p>
@@ -104,11 +179,81 @@ const Comment = ({ comment }) => {
                 {comment.user.first} {comment.user.last}
               </p>
             </div>
-            <p className={`${style.date}`}>
-              {format(comment.date, "dd/MM HH:mmbb")}
-            </p>
+            <div className={`flex row ${style.left}`}>
+              {isUserComment && !edit ? (
+                <div className={`${style.relative}`}>
+                  <img
+                    src={Options}
+                    width="20px"
+                    height="20px"
+                    className={`${style.options}`}
+                    onClick={() => setShowOptions(!showOptions)}
+                    tabIndex={0}
+                  />
+                  {showOptions ? (
+                    <div className={`flex col ${style.buttonDiv}`}>
+                      <button
+                        onClick={() => {
+                          setEdit(true);
+                          setShowOptions(false);
+                          setOriginalComment(commentInfo.text);
+                        }}
+                        className={`${style.edit} ${style.button}`}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={deleteComment}
+                        className={`${style.delete} ${style.button}`}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ) : null}{" "}
+                </div>
+              ) : null}
+              <p className={`${style.date}`}>
+                {format(comment.date, "dd/MM HH:mmbb")}
+              </p>
+            </div>
           </div>
-          <p className={`${style.mainText}`}>{comment.text}</p>
+          {!edit ? (
+            <p className={`${style.mainText}`}>{commentInfo.text}</p>
+          ) : (
+            <form
+              onSubmit={editComment}
+              className={`flex col ${style.editForm}`}
+            >
+              <textarea
+                placeholder="Edit your comment"
+                value={commentInfo.text}
+                name={"edit"}
+                onChange={(e) => {
+                  if (
+                    editCommentContent.current.className ===
+                      `${style.editTextArea} errorAnimation` &&
+                    commentInfo.text !== ""
+                  ) {
+                    editCommentContent.current.className = `${style.editTextArea}`;
+                  }
+                  setCommentInfo({ ...commentInfo, text: e.target.value });
+                }}
+                className={`${style.editTextArea}`}
+                ref={editCommentContent}
+              ></textarea>
+              <div className={`flex row ${style.editBtn}`}>
+                <button type="submit">Edit</button>
+                <button
+                  onClick={() => {
+                    setEdit(false);
+                    setCommentInfo({ ...comment, text: comment.text });
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
           <div className={`flex row ${style.likes}`}>
             <img
               onClick={changeLikeStatus}

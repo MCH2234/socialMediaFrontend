@@ -123,7 +123,7 @@ const HomePage = () => {
                   <Post
                     key={post.id}
                     post={post}
-                    isUserPost={post.user.id === user.id ? true : false}
+                    isUserPost={post.user.id === user.id}
                   />
                 ))}
                 {cursor ? <p ref={ref}>loading...</p> : null}
