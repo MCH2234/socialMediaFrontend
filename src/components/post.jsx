@@ -13,10 +13,10 @@ const Post = ({ post, isUserPost }) => {
   const [like, setLike] = useState(post.isLikedByUser);
   const [totalLikes, setLikes] = useState(post._count.likes);
   const [pending, setPending] = useState(false);
-  const [errors, setErrors] = useState([]);
+  // const [errors, setErrors] = useState([]);
   const [edit, setEdit] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [originalPostText, setOriginalPost] = useState();
+  const [originalPostText, setOriginalPost] = useState(post.text);
   const [comments, setComments] = useState(post.comments);
   const [postInfo, setPostInfo] = useState({
     date: post.date,
@@ -24,7 +24,6 @@ const Post = ({ post, isUserPost }) => {
   });
 
   const editPostContent = useRef(null);
-
   const postToBeDeleted = useRef(null);
   const removeFollowIcon = useRef(null);
 

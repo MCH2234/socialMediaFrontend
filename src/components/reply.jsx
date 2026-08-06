@@ -4,16 +4,90 @@ import FullLike from "../assets/likefull.svg";
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router";
-const Reply = ({ comment, index }) => {
+import Options from "../assets/more.svg";
+const Reply = ({ comment, index, isUserReply }) => {
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setlikeCount] = useState(comment._count.likes);
+  const [replyInfo, setReplyInfo] = useState({
+    text: comment.text,
+    date: comment.date,
+  });
+  const [showOptions, setShowOptions] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [originalReplyText, setOriginalReplyText] = useState(comment.text);
+
   const { JWT, fetchURL } = useOutletContext();
+
   const focusOnNewReply = useRef(null);
+  const editReplyContent = useRef(null);
+  const replyToBeDeleted = useRef(null);
 
   function isElementInView(element) {
     const rect = element.getBoundingClientRect();
     return rect.top >= 0 && rect.bottom <= window.innerHeight;
   }
+
+  const editReply = async (e) => {
+    e.preventDefault();
+    if (replyInfo.text === "") {
+      if (editReplyContent.current.className === `${style.editTextArea}`) {
+        editReplyContent.current.className = `${style.editTextArea} errorAnimation`;
+      } else if (
+        editReplyContent.current.className ===
+        `${style.editTextArea} errorAnimation`
+      ) {
+        editReplyContent.current.className = `${style.editTextArea}`;
+        editReplyContent.current.offsetWidth;
+        editReplyContent.current.className = `${style.editTextArea} errorAnimation`;
+      }
+      return;
+    }
+    if (replyInfo.text === originalReplyText) {
+      setEdit(false);
+      return;
+    }
+    try {
+      const response = await fetch(`${fetchURL}/comment/${comment.id}`, {
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+        body: JSON.stringify({
+          comment: replyInfo.text,
+        }),
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        setEdit(false);
+        setReplyInfo({ text: comment.text, date: comment.date });
+        throw new Error(body.error);
+      } else {
+        setEdit(false);
+        setReplyInfo({ ...replyInfo, date: new Date() });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteReply = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${fetchURL}/comment/${comment.id}`, {
+        headers: { Authorization: `Bearer ${JWT}` },
+        method: "DELETE",
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        replyToBeDeleted.current.remove();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     if (index === 0) {
@@ -52,24 +126,91 @@ const Reply = ({ comment, index }) => {
   };
 
   return (
-    <div className={`flex row ${style.reply}`}>
+    <div ref={replyToBeDeleted} className={`flex row ${style.reply}`}>
       <div className={`${style.pfp}`}>
         <p>{initials}</p>
       </div>
       <div
         tabIndex="0"
         ref={focusOnNewReply}
-        className={`flex col ${style.mainText}`}
+        className={`flex col ${style.mainTextContainer}`}
       >
         <div className={`flex row ${style.dateUser}`}>
           <p className={`${style.name} no-margin`}>
             {comment.user.first} {comment.user.last}
           </p>
-          <p className={`${style.date}`}>
-            {format(comment.date, "dd/MM HH:mmbb")}
-          </p>
+          <div className={`flex row ${style.left}`}>
+            {isUserReply && !edit ? (
+              <div className={`${style.relative}`}>
+                <img
+                  src={Options}
+                  width="20px"
+                  height="20px"
+                  className={`${style.options}`}
+                  onClick={() => setShowOptions(!showOptions)}
+                  tabIndex={0}
+                />
+                {showOptions ? (
+                  <div className={`flex col ${style.buttonDiv}`}>
+                    <button
+                      onClick={() => {
+                        setEdit(true);
+                        setShowOptions(false);
+                        setOriginalReplyText(replyInfo.text);
+                      }}
+                      className={`${style.edit} ${style.button}`}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={deleteReply}
+                      className={`${style.delete} ${style.button}`}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : null}{" "}
+              </div>
+            ) : null}
+            <p className={`${style.date}`}>
+              {format(comment.date, "dd/MM HH:mmbb")}
+            </p>
+          </div>
         </div>
-        <p className={`${style.text}`}>{comment.text}</p>
+        {!edit ? (
+          <p className={`${style.mainText}`}>{replyInfo.text}</p>
+        ) : (
+          <form onSubmit={editReply} className={`flex col ${style.editForm}`}>
+            <textarea
+              placeholder="Edit your reply"
+              value={replyInfo.text}
+              name={"edit"}
+              onChange={(e) => {
+                if (
+                  editReplyContent.current.className ===
+                    `${style.editTextArea} errorAnimation` &&
+                  replyInfo.text !== ""
+                ) {
+                  editReplyContent.current.className = `${style.editTextArea}`;
+                }
+                setReplyInfo({ ...replyInfo, text: e.target.value });
+              }}
+              className={`${style.editTextArea}`}
+              ref={editReplyContent}
+            ></textarea>
+            <div className={`flex row ${style.editBtn}`}>
+              <button type="submit">Edit</button>
+              <button
+                onClick={() => {
+                  setEdit(false);
+                  setReplyInfo({ ...comment, text: comment.text });
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
         <div className={`flex row ${style.likes}`}>
           <img
             className={`${style.like}`}
