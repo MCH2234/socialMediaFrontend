@@ -61,3 +61,7 @@ button:hover {
     transform: translateX(0);
   }
 }
+.overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

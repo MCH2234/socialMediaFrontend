@@ -173,17 +173,15 @@ const Comment = ({ comment, isUserComment }) => {
     }
   };
 
-  console.log(replies.replies.length);
-
   return (
-    <div ref={commentToBeDeleted} className={`flex col`}>
+    <div ref={commentToBeDeleted} className={`flex col `}>
       <div className={`flex row ${style.comment}`}>
         <div className={`${style.pfp}`}>
           <p>{initials}</p>
         </div>
         <div className={`${style.mainTextContainer}`}>
           <div className={`flex row ${style.userDate}`}>
-            <div className={`flex col`}>
+            <div className={`flex col overflow`}>
               <p className={`${style.name} no-margin`}>
                 {comment.user.first} {comment.user.last}
               </p>
@@ -193,8 +191,8 @@ const Comment = ({ comment, isUserComment }) => {
                 <div className={`${style.relative}`}>
                   <img
                     src={Options}
-                    width="20px"
-                    height="20px"
+                    width="15px"
+                    height="15px"
                     className={`${style.options}`}
                     onClick={() => setShowOptions(!showOptions)}
                     tabIndex={0}

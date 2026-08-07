@@ -186,7 +186,13 @@ const Post = ({ post, isUserPost }) => {
   };
 
   return (
-    <div ref={postToBeDeleted} className={`flex col ${style.post}`}>
+    <div
+      onClick={() => {
+        setShowOptions(false);
+      }}
+      ref={postToBeDeleted}
+      className={`flex col ${style.post}`}
+    >
       {/* <span className={`${style.experiment}`}></span> */}
       <div className={`flex row ${style.dateUser}`}>
         <div className={`${style.pfp}`}>
@@ -214,10 +220,13 @@ const Post = ({ post, isUserPost }) => {
             <div className={`${style.relative}`}>
               <img
                 src={Options}
-                width="20px"
-                height="20px"
+                width="15px"
+                height="15px"
                 className={`${style.options}`}
-                onClick={() => setShowOptions(!showOptions)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowOptions(!showOptions);
+                }}
                 tabIndex={0}
               />
               {showOptions ? (

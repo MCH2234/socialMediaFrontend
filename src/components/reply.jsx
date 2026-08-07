@@ -93,7 +93,6 @@ const Reply = ({ comment, index, isUserReply, setReplies }) => {
     if (index === 0) {
       if (!isElementInView(focusOnNewReply.current)) {
         focusOnNewReply.current.focus();
-        // or newReplyRef.current.focus() if it's focusable and you want keyboard focus
       }
     }
   }, [index]);
@@ -126,7 +125,13 @@ const Reply = ({ comment, index, isUserReply, setReplies }) => {
   };
 
   return (
-    <div ref={replyToBeDeleted} className={`flex row ${style.reply}`}>
+    <div
+      onClick={() => {
+        setShowOptions(false);
+      }}
+      ref={replyToBeDeleted}
+      className={`flex row overflow ${style.reply}`}
+    >
       <div className={`${style.pfp}`}>
         <p>{initials}</p>
       </div>
@@ -144,10 +149,13 @@ const Reply = ({ comment, index, isUserReply, setReplies }) => {
               <div className={`${style.relative}`}>
                 <img
                   src={Options}
-                  width="20px"
-                  height="20px"
+                  width="15px"
+                  height="15px"
                   className={`${style.options}`}
-                  onClick={() => setShowOptions(!showOptions)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowOptions(!showOptions);
+                  }}
                   tabIndex={0}
                 />
                 {showOptions ? (
