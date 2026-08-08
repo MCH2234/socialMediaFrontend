@@ -1,4 +1,4 @@
-import style from "./home.module.css";
+import style from "./home/home.module.css";
 const Errors = ({ msg }) => {
   return <li className={`${style.error}`}>{msg}</li>;
 };

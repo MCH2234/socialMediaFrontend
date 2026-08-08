@@ -1,15 +1,18 @@
 import style from "./comment.module.css";
-import Like from "../assets/like.svg";
-import FullLike from "../assets/likefull.svg";
-import Options from "../assets/more.svg";
-import { format } from "date-fns";
-import { useRef, useState } from "react";
-import { useOutletContext } from "react-router";
+import Like from "../../assets/like.svg";
+import FullLike from "../../assets/likefull.svg";
+import Options from "../../assets/more.svg";
 import AddReply from "./addreply";
 import Replies from "./replies";
-const Comment = ({ comment, isUserComment }) => {
-  const initials =
-    comment.user.first[0].toUpperCase() + comment.user.last[0].toUpperCase();
+import { format } from "date-fns";
+import { useRef, useState, useEffect } from "react";
+import { useOutletContext } from "react-router";
+const Comment = ({ comment, isUserComment, shouldFocus, removeComment }) => {
+  const [commentInfo, setCommentInfo] = useState({
+    date: comment.date,
+    text: comment.text,
+  });
+
   const [like, setLike] = useState(comment.isLikedByUser);
   const [likeCount, setLikeCount] = useState(comment._count.likes);
   const [showReplies, setShowReplies] = useState(false);
@@ -21,18 +24,30 @@ const Comment = ({ comment, isUserComment }) => {
     shouldFetchReplies: true,
     replies: [],
   });
-  const [commentInfo, setCommentInfo] = useState({
-    date: comment.date,
-    text: comment.text,
-  });
   const [edit, setEdit] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [originalComment, setOriginalComment] = useState(comment.text);
+
+  const initials =
+    comment.user.first[0].toUpperCase() + comment.user.last[0].toUpperCase();
 
   const { fetchURL, JWT } = useOutletContext();
 
   const editCommentContent = useRef(null);
   const commentToBeDeleted = useRef(null);
+  const commentToFocus = useRef(null);
+
+  function isElementInView(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.top >= 0 && rect.bottom <= window.innerHeight;
+  }
+  useEffect(() => {
+    if (shouldFocus) {
+      if (!isElementInView(commentToFocus.current)) {
+        commentToFocus.current.focus();
+      }
+    }
+  }, [shouldFocus]);
 
   const deleteComment = async (e) => {
     e.preventDefault();
@@ -45,7 +60,7 @@ const Comment = ({ comment, isUserComment }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        commentToBeDeleted.current.remove();
+        removeComment();
       }
     } catch (err) {
       console.log(err);
@@ -179,7 +194,11 @@ const Comment = ({ comment, isUserComment }) => {
         <div className={`${style.pfp}`}>
           <p>{initials}</p>
         </div>
-        <div className={`${style.mainTextContainer}`}>
+        <div
+          ref={commentToFocus}
+          tabindex={0}
+          className={`${style.mainTextContainer}`}
+        >
           <div className={`flex row ${style.userDate}`}>
             <div className={`flex col overflow`}>
               <p className={`${style.name} no-margin`}>
@@ -220,7 +239,7 @@ const Comment = ({ comment, isUserComment }) => {
                 </div>
               ) : null}
               <p className={`${style.date}`}>
-                {format(comment.date, "dd/MM HH:mmbb")}
+                {format(commentInfo.date, "dd/MM HH:mmbb")}
               </p>
             </div>
           </div>

@@ -1,8 +1,14 @@
 import { useRef, useState } from "react";
-import style from "./comment.module.css";
 import { useOutletContext } from "react-router";
+import style from "./comment.module.css";
 
-const AddComment = ({ initials, setComments, comments, postId }) => {
+const AddComment = ({
+  initials,
+  setComments,
+  comments,
+  postId,
+  setCommentToFocus,
+}) => {
   const [input, setInput] = useState("");
   const { fetchURL, JWT } = useOutletContext();
   const commentInput = useRef(null);
@@ -39,6 +45,7 @@ const AddComment = ({ initials, setComments, comments, postId }) => {
         let copyComments = [...comments];
         copyComments.unshift(body.comment);
         setComments(copyComments);
+        setCommentToFocus(body.comment);
 
         setInput("");
         commentInput.current.blur();

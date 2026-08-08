@@ -2,7 +2,13 @@ import { useOutletContext } from "react-router";
 import Comment from "./comment";
 import style from "./comment.module.css";
 
-const Comments = ({ comments, cursor, fetchComments }) => {
+const Comments = ({
+  comments,
+  cursor,
+  fetchComments,
+  focus,
+  removeComment,
+}) => {
   const { user } = useOutletContext();
   return (
     <section
@@ -16,9 +22,12 @@ const Comments = ({ comments, cursor, fetchComments }) => {
       ) : null}
       {comments.map((comment, index) => (
         <Comment
-          key={index}
+          key={comment.id}
           comment={comment}
           isUserComment={user.id === comment.user.id}
+          index={index}
+          shouldFocus={focus === comment}
+          removeComment={() => removeComment(index)}
         />
       ))}
     </section>

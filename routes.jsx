@@ -4,8 +4,8 @@ import Login from "./src/components/login";
 import Signup from "./src/components/signup";
 import Following from "./src/components/following";
 import Browse from "./src/components/browse";
-import MainPage from "./src/components/mainpage";
-import HomePage from "./src/components/hompage";
+import MainPage from "./src/components/post/mainpage";
+import HomePage from "./src/components/home/hompage";
 
 const routes = createBrowserRouter([
   {

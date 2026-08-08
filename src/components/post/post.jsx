@@ -1,14 +1,14 @@
 import style from "./post.module.css";
-import Like from "../assets/like.svg";
-import LikeRed from "../assets/likefull.svg";
-import Follow from "../assets/sendfollow.svg";
-import Options from "../assets/more.svg";
+import Like from "../../assets/like.svg";
+import LikeRed from "../../assets/likefull.svg";
+import Follow from "../../assets/sendfollow.svg";
+import Options from "../../assets/more.svg";
+import AddComment from "../comments/addcomment";
+import Comments from "../comments/comments";
 import { format } from "date-fns";
 import { useOutletContext } from "react-router";
 import { useRef, useState } from "react";
-import Comments from "./comments";
-import AddComment from "./addcomment";
-const Post = ({ post, isUserPost }) => {
+const Post = ({ post, isUserPost, removePost }) => {
   const { JWT, fetchURL } = useOutletContext();
   const [like, setLike] = useState(post.isLikedByUser);
   const [totalLikes, setLikes] = useState(post._count.likes);
@@ -22,13 +22,13 @@ const Post = ({ post, isUserPost }) => {
     date: post.date,
     text: post.text,
   });
+  const [commentToFocus, setCommentToFocus] = useState();
 
   const editPostContent = useRef(null);
-  const postToBeDeleted = useRef(null);
   const removeFollowIcon = useRef(null);
 
   const setInitialCursor =
-    comments.length >= 1 ? comments[comments.length - 1].id : null;
+    comments.length >= 3 ? comments[comments.length - 1].id : null;
   const [commentCursor, setCommentCursor] = useState(setInitialCursor);
 
   let initials =
@@ -93,7 +93,7 @@ const Post = ({ post, isUserPost }) => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        postToBeDeleted.current.remove();
+        removePost();
       }
     } catch (error) {
       console.log(error);
@@ -185,12 +185,18 @@ const Post = ({ post, isUserPost }) => {
     }
   };
 
+  const deleteCommentLocally = (index) => {
+    let filterComments = comments.filter(
+      (comment) => comment !== comments[index],
+    );
+    setComments(filterComments);
+  };
+
   return (
     <div
       onClick={() => {
         setShowOptions(false);
       }}
-      ref={postToBeDeleted}
       className={`flex col ${style.post}`}
     >
       {/* <span className={`${style.experiment}`}></span> */}
@@ -302,13 +308,16 @@ const Post = ({ post, isUserPost }) => {
       <Comments
         comments={comments}
         fetchComments={fetchComments}
+        removeComment={deleteCommentLocally}
         cursor={commentCursor}
+        focus={commentToFocus}
       />
       <AddComment
         setComments={setComments}
         comments={comments}
         initials={initials}
         postId={post.id}
+        setCommentToFocus={setCommentToFocus}
       />
     </div>
   );

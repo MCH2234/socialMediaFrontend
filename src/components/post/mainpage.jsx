@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
-import Top from "../assets/arrowup.svg";
-import style from "./home.module.css";
+import Top from "../../assets/arrowup.svg";
+import style from "../home/home.module.css";
 const fetchURL = "http://localhost:3214/api/v1";
 const MainPage = () => {
   const navigate = useNavigate();

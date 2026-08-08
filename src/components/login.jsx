@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import style from "./auth.module.css";
 import { useNavigate, useOutletContext } from "react-router";
+import style from "./auth.module.css";
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);

@@ -3,9 +3,9 @@ import { Navigate, useOutletContext } from "react-router";
 import { useState } from "react";
 import { useRef } from "react";
 import style from "./home.module.css";
-import Post from "./post";
-import AddPost from "./addpost";
-import Errors from "./errors";
+import Post from "../post/post";
+import AddPost from "../post/addpost";
+import Errors from "../errors";
 
 const HomePage = () => {
   const { fetchURL, JWT, user } = useOutletContext();
@@ -17,6 +17,11 @@ const HomePage = () => {
   // const [followRequests, setFollowRequests] = useState([]);
 
   const ref = useRef(null);
+
+  const deletePost = (index) => {
+    const filterPosts = posts.filter((post) => post !== posts[index]);
+    setPosts(filterPosts);
+  };
 
   const nextPage = async () => {
     try {
@@ -119,11 +124,12 @@ const HomePage = () => {
           <section className={`flex col ${style.posts}`}>
             {posts.length >= 1 ? (
               <>
-                {posts.map((post) => (
+                {posts.map((post, index) => (
                   <Post
                     key={post.id}
                     post={post}
                     isUserPost={post.user.id === user.id}
+                    removePost={() => deletePost(index)}
                   />
                 ))}
                 {cursor ? <p ref={ref}>loading...</p> : null}
