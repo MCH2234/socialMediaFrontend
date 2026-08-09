@@ -1,5 +1,8 @@
 .nav {
   justify-content: center;
+  position: relative;
+  width: fit-content;
+  margin: auto;
 }
 .navItems {
   gap: 5px;
@@ -29,4 +32,50 @@
 }
 .error {
   color: rgb(234, 31, 31);
+}
+.followRequests {
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+.followRequests:hover {
+  cursor: pointer;
+}
+.followCount {
+  position: absolute;
+  bottom: 34px;
+  left: 30px;
+}
+.follow {
+  position: absolute;
+  background-color: rgb(79, 79, 79);
+  border-radius: 20px;
+  height: 620px;
+  width: 480px;
+  top: 50px;
+  left: 50px;
+  z-index: 2;
+}
+.list {
+  justify-self: center;
+  overflow-y: scroll;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: calc(100% - 60px);
+  gap: 15px;
+}
+.followName {
+  overflow-wrap: anywhere;
+}
+.followContent {
+  align-items: center;
+  border-bottom: 0.5px solid black;
+  padding-bottom: 10px;
+}
+.requestButtons {
+  align-items: center;
+  margin-left: auto;
+  gap: 3px;
 }

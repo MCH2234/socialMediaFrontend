@@ -2,12 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import Top from "../../assets/arrowup.svg";
 import style from "../home/home.module.css";
+import FollowRequest from "../../assets/fr.svg";
 const fetchURL = "http://localhost:3214/api/v1";
 const MainPage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
+  const [followRequests, setFollowRequests] = useState({
+    requests: [],
+    show: false,
+  });
   const [toTheTopVisibility, setToTheTopVisibility] = useState(false);
 
   let navBar = useRef(null);
@@ -37,6 +42,56 @@ const MainPage = () => {
       : null;
 
   const [JWT, setJWT] = useState(token);
+
+  const acceptFollowRequest = async (request) => {
+    try {
+      const response = await fetch(`${fetchURL}/user/follow/${request.id}`, {
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+        },
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        const filterRequests = followRequests.requests.filter(
+          (req) => req !== request,
+        );
+        setFollowRequests({
+          show: filterRequests.length === 0 ? false : true,
+          requests: filterRequests,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const declineFollowRequest = async (request) => {
+    try {
+      const response = await fetch(`${fetchURL}/user/follow/${request.id}`, {
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+        },
+        method: "DELETE",
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        const filterRequests = followRequests.requests.filter(
+          (req) => req !== request,
+        );
+        setFollowRequests({
+          show: filterRequests.length === 0 ? false : true,
+          requests: filterRequests,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const logout = async () => {
     try {
@@ -80,7 +135,6 @@ const MainPage = () => {
             throw new Error(r.error);
           } else {
             setUser(r.user);
-            setLoading(false);
           }
         })
         .catch((error) => {
@@ -90,8 +144,34 @@ const MainPage = () => {
         });
     } else {
       setLoading(false);
+      setFollowRequests({ requests: [], show: false });
     }
   }, [JWT]);
+
+  useEffect(() => {
+    if (user) {
+      let ok;
+      fetch(`${fetchURL}/user/follow/request`, {
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+        },
+        method: "GET",
+      })
+        .then((r) => {
+          ok = r.ok;
+          return r.json();
+        })
+        .then((r) => {
+          if (!ok) {
+            throw new Error(r.error);
+          } else {
+            setFollowRequests({ show: false, requests: r.requests });
+          }
+        })
+        .catch((err) => console.log(err))
+        .finally(() => setLoading(false));
+    }
+  }, [user]);
 
   const userNavItems = [
     {
@@ -106,7 +186,6 @@ const MainPage = () => {
     { text: "Signup", path: "/signup" },
     { text: "Login", path: "/login" },
   ];
-
   return (
     <>
       {!loading ? (
@@ -127,6 +206,57 @@ const MainPage = () => {
                         </li>
                       ))}
                 </ul>
+
+                {user && followRequests.requests.length >= 1 ? (
+                  <div
+                    onClick={() =>
+                      setFollowRequests({
+                        ...followRequests,
+                        show: !followRequests.show,
+                      })
+                    }
+                    className={`${style.followRequests}`}
+                  >
+                    <img src={FollowRequest} width="30px" height="30px" />
+                    <div className={`${style.followCount}`}>
+                      {followRequests.requests.length}
+                    </div>
+                  </div>
+                ) : null}
+                {followRequests.requests.length >= 1 &&
+                followRequests.show === true ? (
+                  <div className={`${style.follow}`}>
+                    <ul className={`flex col ${style.list}`}>
+                      {followRequests.requests.map((request) => (
+                        <li
+                          className={`flex row ${style.followContent}`}
+                          key={request.id}
+                        >
+                          <a className={`flex col ${style.userName}`}>
+                            <span className={`${style.followName}`}>
+                              {request.from.first} {request.from.last}
+                            </span>
+                            <span>@{request.from.user}</span>
+                          </a>
+                          <div className={`flex col ${style.requestButtons}`}>
+                            <button
+                              onClick={() => acceptFollowRequest(request)}
+                              className={"main-button-style"}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => declineFollowRequest(request)}
+                              className={"main-button-style"}
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </nav>
               {toTheTopVisibility ? (
                 <img

@@ -189,7 +189,13 @@ const Comment = ({ comment, isUserComment, shouldFocus, removeComment }) => {
   };
 
   return (
-    <div ref={commentToBeDeleted} className={`flex col `}>
+    <div
+      ref={commentToBeDeleted}
+      onClick={() => {
+        setShowOptions(false);
+      }}
+      className={`flex col `}
+    >
       <div className={`flex row ${style.comment}`}>
         <div className={`${style.pfp}`}>
           <p>{initials}</p>
@@ -213,7 +219,10 @@ const Comment = ({ comment, isUserComment, shouldFocus, removeComment }) => {
                     width="15px"
                     height="15px"
                     className={`${style.options}`}
-                    onClick={() => setShowOptions(!showOptions)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowOptions(!showOptions);
+                    }}
                     tabIndex={0}
                   />
                   {showOptions ? (
@@ -292,6 +301,7 @@ const Comment = ({ comment, isUserComment, shouldFocus, removeComment }) => {
             <p
               onClick={() => setAddReply({ ...addReply, add: !addReply.add })}
               className={`${style.replyButton}`}
+              tabIndex={0}
             >
               Reply
             </p>
