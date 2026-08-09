@@ -3,9 +3,9 @@ import { Navigate, useOutletContext } from "react-router";
 import { useState } from "react";
 import { useRef } from "react";
 import style from "./home.module.css";
-import Post from "../post/post";
 import AddPost from "../post/addpost";
 import Errors from "../errors";
+import HomePagePost from "../post/posthome";
 
 const HomePage = () => {
   const { fetchURL, JWT, user } = useOutletContext();
@@ -125,7 +125,7 @@ const HomePage = () => {
             {posts.length >= 1 ? (
               <>
                 {posts.map((post, index) => (
-                  <Post
+                  <HomePagePost
                     key={post.id}
                     post={post}
                     isUserPost={post.user.id === user.id}
