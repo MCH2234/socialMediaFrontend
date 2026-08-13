@@ -79,3 +79,9 @@
   margin-left: auto;
   gap: 3px;
 }
+.profileIcon {
+  margin-left: 10px;
+}
+.profileIcon:hover {
+  cursor: pointer;
+}

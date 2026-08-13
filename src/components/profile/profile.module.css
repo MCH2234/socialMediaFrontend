@@ -1,0 +1,107 @@
+.header {
+  margin-left: 15%;
+  margin-right: 15%;
+  padding-bottom: 20px;
+  align-items: center;
+  border-bottom: 2px solid black;
+}
+@media (max-width: 480px) {
+  .header {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+  }
+}
+
+.pfp {
+  border-radius: 150px;
+  border: 1.5px solid white;
+  text-align: center;
+  height: 100px;
+  width: 100px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+.pfp p {
+  font-size: 25px;
+  margin-top: 50%;
+  transform: translateY(-50%);
+  margin-bottom: 0px;
+}
+.nameAndStats {
+  margin-left: 50px;
+}
+#name {
+  font-size: 23px;
+  margin-bottom: 3px;
+}
+.stats {
+  margin-top: 20px;
+  position: relative;
+  width: fit-content;
+}
+.stats button {
+  color: var(--secondary-color);
+  border: none;
+  background-color: transparent;
+}
+.line {
+  position: absolute;
+  border-bottom: 0.5px solid white;
+  width: 65.792px;
+  top: 30px;
+}
+.lineInitial {
+  transform: scaleX(0);
+}
+.moveToFollowing {
+  right: 5%;
+  animation-name: following;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+.moveToFollowers {
+  left: 5%;
+  animation-name: followers;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes followers {
+  0% {
+    transform: translateX(82.24px);
+  }
+  50% {
+    transform: scaleX(0.1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+@keyframes following {
+  0% {
+    transform: translateX(-82.24px);
+  }
+  50% {
+    transform: scaleX(0.1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+.showOnFollowers {
+  left: 5%;
+  transition-duration: 200ms;
+  transition-property: transform;
+  transition-timing-function: linear;
+  transform: scaleX(1);
+}
+.showOnFollowing {
+  right: 5%;
+  transition-duration: 200ms;
+  transition-property: transform;
+  transition-timing-function: linear;
+  transform: scaleX(1);
+}

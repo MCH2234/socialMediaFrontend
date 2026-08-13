@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import Top from "../../assets/arrowup.svg";
 import style from "../home/home.module.css";
+import Profile from "../../assets/profile.svg";
 import FollowRequest from "../../assets/fr.svg";
 const fetchURL = "http://localhost:3214/api/v1";
 const MainPage = () => {
@@ -13,7 +14,7 @@ const MainPage = () => {
     requests: [],
     show: false,
   });
-  const [toTheTopVisibility, setToTheTopVisibility] = useState(false);
+  const [skipToTheTopVisibility, setSkipToTheTopVisibility] = useState(false);
 
   let navBar = useRef(null);
 
@@ -21,14 +22,22 @@ const MainPage = () => {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting === false) {
-          setToTheTopVisibility(true);
+          setSkipToTheTopVisibility(true);
         } else {
-          setToTheTopVisibility(false);
+          setSkipToTheTopVisibility(false);
         }
       });
     },
     { threshold: 0.1 },
   );
+
+  useEffect(() => {
+    if (followRequests.show === true) {
+      window.document.body.style = "overflow:hidden";
+    } else {
+      window.document.body.style = "";
+    }
+  }, [followRequests.show]);
 
   useEffect(() => {
     if (loading) return;
@@ -118,6 +127,8 @@ const MainPage = () => {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
+    let ignore = false;
     let ok;
     if (JWT) {
       fetch(`${fetchURL}/user`, {
@@ -134,7 +145,7 @@ const MainPage = () => {
           if (!ok) {
             throw new Error(r.error);
           } else {
-            setUser(r.user);
+            if (!ignore) setUser(r.user);
           }
         })
         .catch((error) => {
@@ -146,9 +157,15 @@ const MainPage = () => {
       setLoading(false);
       setFollowRequests({ requests: [], show: false });
     }
+    return () => {
+      ignore = true;
+      controller.abort();
+    };
   }, [JWT]);
 
   useEffect(() => {
+    let ignore = false;
+    const controller = new AbortController();
     if (user) {
       let ok;
       fetch(`${fetchURL}/user/follow/request`, {
@@ -165,11 +182,16 @@ const MainPage = () => {
           if (!ok) {
             throw new Error(r.error);
           } else {
-            setFollowRequests({ show: false, requests: r.requests });
+            if (!ignore)
+              setFollowRequests({ show: false, requests: r.requests });
           }
         })
         .catch((err) => console.log(err))
         .finally(() => setLoading(false));
+      return () => {
+        ignore = true;
+        controller.abort();
+      };
     }
   }, [user]);
 
@@ -194,17 +216,28 @@ const MainPage = () => {
             <>
               <nav ref={navBar} className={`flex row ${style.nav}`}>
                 <ul className={`flex row ${style.navItems}`}>
-                  {JWT
-                    ? userNavItems.map((item, index) => (
+                  {JWT ? (
+                    <>
+                      {userNavItems.map((item, index) => (
                         <li key={index} onClick={item.onClick}>
                           {item.text}
                         </li>
-                      ))
-                    : guestNavItems.map((item, index) => (
-                        <li key={index} onClick={() => navigate(item.path)}>
-                          {item.text}
-                        </li>
                       ))}
+                      <img
+                        onClick={() => navigate("profile")}
+                        className={`${style.profileIcon}`}
+                        src={Profile}
+                        height="20px"
+                        width="20px"
+                      />
+                    </>
+                  ) : (
+                    guestNavItems.map((item, index) => (
+                      <li key={index} onClick={() => navigate(item.path)}>
+                        {item.text}
+                      </li>
+                    ))
+                  )}
                 </ul>
 
                 {user && followRequests.requests.length >= 1 ? (
@@ -258,7 +291,7 @@ const MainPage = () => {
                   </div>
                 ) : null}
               </nav>
-              {toTheTopVisibility ? (
+              {skipToTheTopVisibility ? (
                 <img
                   src={Top}
                   onClick={() =>
