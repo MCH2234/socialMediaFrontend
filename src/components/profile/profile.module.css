@@ -5,7 +5,7 @@
   align-items: center;
   border-bottom: 2px solid black;
 }
-@media (max-width: 480px) {
+@media (max-width: 454px) {
   .header {
     margin-left: auto;
     margin-right: auto;
@@ -48,25 +48,45 @@
 .line {
   position: absolute;
   border-bottom: 0.5px solid white;
-  width: 65.792px;
   top: 30px;
 }
 .lineInitial {
   transform: scaleX(0);
 }
-.moveToFollowing {
-  right: 5%;
-  animation-name: following;
+.moveToFollowingFromPost {
+  left: 119.174px;
+  width: 35.616px;
+  animation-name: following-from-post;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+.moveToFollowingFromFollowers {
+  left: 51.307px;
+  animation-name: following-from-followers;
   animation-duration: 1s;
   animation-timing-function: ease-in-out;
   animation-fill-mode: both;
 }
-.moveToFollowers {
-  left: 5%;
-  animation-name: followers;
-  animation-duration: 1s;
-  animation-timing-function: ease-in-out;
-  animation-fill-mode: both;
+.moveToPostFromFollowing {
+}
+.moveToPostFromFollowers {
+}
+.moveToFollowersFromFollowing {
+}
+.moteToFollowersFromPost {
+}
+@keyframes following-from-post {
+  0% {
+    transform: translateX(-112.39px);
+  }
+  50% {
+    transform: scaleX(0.25);
+  }
+  100% {
+    transform: scaleX(1);
+    width: 54.272px;
+  }
 }
 
 @keyframes followers {
@@ -74,34 +94,37 @@
     transform: translateX(82.24px);
   }
   50% {
-    transform: scaleX(0.1);
+    transform: scaleX(0.25);
   }
   100% {
     transform: scaleX(1);
   }
 }
-@keyframes following {
-  0% {
-    transform: translateX(-82.24px);
-  }
-  50% {
-    transform: scaleX(0.1);
-  }
-  100% {
-    transform: scaleX(1);
-  }
+
+.showOnPosts {
+  left: 4.452px;
+  width: 35.616px;
+  transition-duration: 200ms;
+  transition-property: transform;
+  transition-timing-function: linear;
+  transform: scaleX(1);
 }
 .showOnFollowers {
-  left: 5%;
+  left: 51.307px;
+  width: 54.296px;
   transition-duration: 200ms;
   transition-property: transform;
   transition-timing-function: linear;
   transform: scaleX(1);
 }
 .showOnFollowing {
-  right: 5%;
+  left: 119.174px;
+  width: 54.272px;
   transition-duration: 200ms;
   transition-property: transform;
   transition-timing-function: linear;
   transform: scaleX(1);
+}
+.mainContainer {
+  margin-top: 20px;
 }

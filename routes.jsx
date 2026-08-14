@@ -7,9 +7,9 @@ import Browse from "./src/components/browse";
 import MainPage from "./src/components/post/mainpage";
 import HomePage from "./src/components/home/hompage";
 import CurrentUserProfile from "./src/components/profile/currentuserprofilepage";
-import UserPosts from "./src/components/profile/userposts/postsprofile";
 import ProfileFollowing from "./src/components/profile/followingpage/profilefollowing";
 import ProfileFollowers from "./src/components/profile/followingpage/profilefollowers";
+import PostsOfUser from "./src/components/profile/userposts/alluserposts";
 
 const routes = createBrowserRouter([
   {
@@ -29,7 +29,7 @@ const routes = createBrowserRouter([
         path: "/profile",
         element: <CurrentUserProfile />,
         children: [
-          { index: true, element: <UserPosts /> },
+          { index: true, element: <PostsOfUser /> },
           { path: "following", element: <ProfileFollowing /> },
           {
             path: "followers",
