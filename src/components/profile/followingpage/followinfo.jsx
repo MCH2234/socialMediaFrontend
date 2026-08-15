@@ -1,6 +1,6 @@
 import { useState } from "react";
 import style from "./follow.module.css";
-const FollowContainer = ({ user, text }) => {
+const FollowContainer = ({ user, text, onClick }) => {
   const initials = user.first[0].toUpperCase() + user.last[0].toUpperCase();
   const [isHovering, setIsHovering] = useState(false);
   return (
@@ -18,6 +18,7 @@ const FollowContainer = ({ user, text }) => {
       </a>
       {
         <button
+          onClick={onClick}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           className={`${style.unfollowBtn} ${text.length === 1 ? style.removeBtn : ""}`}

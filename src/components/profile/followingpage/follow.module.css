@@ -14,6 +14,7 @@
 }
 .user {
   width: 100%;
+  min-width: 0px;
 }
 .user button {
   margin-left: auto;
@@ -44,6 +45,7 @@
   font-size: 20px;
   margin-bottom: 10px;
   margin-top: 0px;
+  overflow-wrap: anywhere;
 }
 .username {
   margin-top: 0px;
@@ -62,13 +64,14 @@
   color: var(--secondary-color);
   border: 0.5px solid;
   border-color: rgb(125, 124, 125);
+  flex-shrink: 0;
 }
 .unfollowBtn:hover {
   box-shadow: 0 2px 4px rgba(229, 225, 225, 0.1);
 }
 .removeBtn {
   transition-property: background-color;
-  transition: 300ms;
+  transition: 500ms;
 }
 .removeBtn:hover {
   background-color: rgba(195, 22, 22, 0.7);

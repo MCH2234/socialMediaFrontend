@@ -5,8 +5,34 @@ import FollowContainer from "./followinfo";
 
 const ProfileFollowing = () => {
   const [loading, setLoading] = useState(true);
-  const [isHovering, setIsHovering] = useState(false);
   const { follow, setFollow, fetchURL, JWT } = useOutletContext();
+
+  const unfollowUser = async (user) => {
+    try {
+      const response = await fetch(`${fetchURL}/user/follow/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${JWT}`,
+        },
+        method: "DELETE",
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        throw new Error(body.error);
+      } else {
+        console.log(body);
+        const filterFollowing = follow.following.following.filter(
+          (following) => following != user,
+        );
+        const copyFollowing = { ...follow.following };
+        copyFollowing.following = filterFollowing;
+        const copyFollow = { ...follow, following: copyFollowing };
+        setFollow(copyFollow);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     let ignore = false;
@@ -53,13 +79,18 @@ const ProfileFollowing = () => {
         <p>Loading...</p>
       ) : (
         <section className={`flex col ${style.section}`}>
-          {follow.following.following.map((follow) => (
-            <FollowContainer
-              key={follow.id}
-              user={follow}
-              text={["Unfollow", "Following"]}
-            />
-          ))}
+          {follow.following.following.length >= 1 ? (
+            follow.following.following.map((follow) => (
+              <FollowContainer
+                key={follow.id}
+                user={follow}
+                text={["Unfollow", "Following"]}
+                onClick={() => unfollowUser(follow)}
+              />
+            ))
+          ) : (
+            <p>You don't follow any users</p>
+          )}
         </section>
       )}
     </>

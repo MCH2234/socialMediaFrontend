@@ -10,6 +10,7 @@
   min-width: 400px;
   width: 60%;
   border-color: var(--dark-reader-border);
+  overflow-wrap: break-word;
 }
 .dateUser {
   position: relative;

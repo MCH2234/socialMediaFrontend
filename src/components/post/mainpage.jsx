@@ -79,12 +79,15 @@ const MainPage = () => {
 
   const declineFollowRequest = async (request) => {
     try {
-      const response = await fetch(`${fetchURL}/user/follow/${request.id}`, {
-        headers: {
-          Authorization: `Bearer ${JWT}`,
+      const response = await fetch(
+        `${fetchURL}/user/follow/request/${request.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JWT}`,
+          },
+          method: "DELETE",
         },
-        method: "DELETE",
-      });
+      );
       const body = await response.json();
       if (!response.ok) {
         throw new Error(body.error);
