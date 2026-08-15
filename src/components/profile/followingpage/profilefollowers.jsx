@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import style from "./follow.module.css";
+import FollowContainer from "./followinfo";
 
 const ProfileFollowers = () => {
   const [loading, setLoading] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
   const { follow, setFollow, fetchURL, JWT } = useOutletContext();
 
   useEffect(() => {
@@ -51,7 +53,11 @@ const ProfileFollowers = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <section className={`flex col ${style.section} `}></section>
+        <section className={`flex col ${style.section} `}>
+          {follow.followers.followers.map((follow) => (
+            <FollowContainer key={follow.id} user={follow} text={["Remove"]} />
+          ))}
+        </section>
       )}
     </>
   );

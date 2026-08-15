@@ -37,6 +37,7 @@ const routes = createBrowserRouter([
           },
         ],
       },
+      { path: "/user/:user" },
     ],
   },
 ]);

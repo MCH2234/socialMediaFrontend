@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import style from "./follow.module.css";
+import FollowContainer from "./followinfo";
 
 const ProfileFollowing = () => {
   const [loading, setLoading] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
   const { follow, setFollow, fetchURL, JWT } = useOutletContext();
   useEffect(() => {
     const controller = new AbortController();
@@ -50,7 +52,15 @@ const ProfileFollowing = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <section className={`flex col ${style.section}`}></section>
+        <section className={`flex col ${style.section}`}>
+          {follow.following.following.map((follow) => (
+            <FollowContainer
+              key={follow.id}
+              user={follow}
+              text={["Unfollow", "Following"]}
+            />
+          ))}
+        </section>
       )}
     </>
   );

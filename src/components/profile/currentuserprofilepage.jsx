@@ -107,7 +107,7 @@ const CurrentUserProfile = () => {
       ) {
         line.current.className = `${style.line} ${style.moveToFollowersFromPost}`;
         setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("following");
+        navigate("followers");
       }
     }
   };
