@@ -22,8 +22,12 @@ const CurrentUserProfile = () => {
     followers: { cursor: null, followers: undefined },
   });
   const [posts, setPosts] = useState({ posts: [], cursor: null });
+  const [currentTab, setCurrentTab] = useState(0);
+
+  const navigate = useNavigate();
 
   const line = useRef(null);
+  const containerRef = useRef(null);
   const URLParams = useHref();
 
   const initialLineStyle = (current) => {
@@ -51,65 +55,73 @@ const CurrentUserProfile = () => {
     });
   }, []);
 
-  const navigate = useNavigate();
-
-  const lineAnimationHandler = (current) => {
-    if (lineVisibility.visible === false) {
-      setLineVisibility({ visible: true, currentFocus: current });
-    } else if (lineVisibility.visible) {
-      if (lineVisibility.currentFocus === "") {
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        line.current.className = `${style.line} ${initialLineStyle(current)}`;
-        if (current !== "posts") {
-          navigate(`${current}`);
-        } else {
-          navigate("/profile");
-        }
-      }
-      if (
-        lineVisibility.currentFocus === "following" &&
-        current === "followers"
-      ) {
-        line.current.className = `${style.line} ${style.moveToFollowersFromFollowing}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("followers");
-      } else if (
-        lineVisibility.currentFocus === "followers" &&
-        current === "following"
-      ) {
-        line.current.className = `${style.line} ${style.moveToFollowingFromFollowers}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("following");
-      } else if (
-        lineVisibility.currentFocus === "followers" &&
-        current === "posts"
-      ) {
-        line.current.className = `${style.line} ${style.moveToPostFromFollowers}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("/profile");
-      } else if (
-        lineVisibility.currentFocus === "following" &&
-        current === "posts"
-      ) {
-        line.current.className = `${style.line} ${style.moveToPostFromFollowing}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("/profile");
-      } else if (
-        lineVisibility.currentFocus === "posts" &&
-        current === "following"
-      ) {
-        line.current.className = `${style.line} ${style.moveToFollowingFromPost}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("following");
-      } else if (
-        lineVisibility.currentFocus === "posts" &&
-        current === "followers"
-      ) {
-        line.current.className = `${style.line} ${style.moveToFollowersFromPost}`;
-        setLineVisibility({ ...lineVisibility, currentFocus: current });
-        navigate("followers");
+  const alternativeLineAnimationHandler = (index) => {
+    if (index === currentTab) return;
+    const elementToMoveTo =
+      containerRef.current.children[index].getBoundingClientRect();
+    const currentElement =
+      containerRef.current.children[currentTab].getBoundingClientRect();
+    line.current.style.width = `${(elementToMoveTo.width * 80) / 100}px`;
+    let left = 0;
+    if (index > 0) {
+      for (let i = 0; i < index; i++) {
+        left += containerRef.current.children[i].getBoundingClientRect().width;
       }
     }
+    left =
+      left +
+      (containerRef.current.children[index].getBoundingClientRect().width *
+        10) /
+        100;
+    line.current.style.left = `${left}px`;
+    const diff = index > currentTab ? index - currentTab : currentTab - index;
+    const currentElementWidth = currentElement.width;
+    const elementToMoveToWidth = elementToMoveTo.width;
+    let howMuchToMove = 0;
+    if (diff === 1) {
+      howMuchToMove =
+        index < currentTab
+          ? (currentElementWidth * 10) / 100 +
+            elementToMoveToWidth -
+            (elementToMoveToWidth * 10) / 100
+          : -currentElementWidth +
+            (currentElementWidth * 10) / 100 -
+            (elementToMoveToWidth * 10) / 100;
+    } else if (diff > 1) {
+      for (
+        let j = currentTab;
+        index > currentTab ? j < index : j > index;
+        index > currentTab ? j++ : j--
+      ) {
+        howMuchToMove +=
+          containerRef.current.children[j].getBoundingClientRect().width;
+      }
+      let finalHowMuchToMove =
+        index < currentTab
+          ? howMuchToMove -
+            (currentElementWidth * 10) / 100 +
+            (elementToMoveToWidth * 10) / 100
+          : -howMuchToMove +
+            (currentElementWidth * 10) / 100 -
+            (elementToMoveToWidth * 10) / 100;
+      howMuchToMove = finalHowMuchToMove;
+    }
+    line.current.animate(
+      [
+        {
+          transform: `translateX(${howMuchToMove}px)`,
+          width: `${(currentElementWidth * 80) / 100}px`,
+          offset: 0,
+        },
+        {
+          transform: `scaleX(0.25)`,
+          offset: 0.5,
+        },
+        { transform: `scaleX(1)` },
+      ],
+      { duration: 1000, easing: "ease-in-out", fill: "both" },
+    );
+    setCurrentTab(index);
   };
 
   return (
@@ -125,12 +137,29 @@ const CurrentUserProfile = () => {
             {user.first} {user.last}
           </span>
           <span id={`${style.user}`}>@{user.user}</span>
-          <div className={`${style.stats}`}>
-            <button onClick={() => lineAnimationHandler("posts")}>Posts</button>
-            <button onClick={() => lineAnimationHandler("followers")}>
+          <div ref={containerRef} className={`${style.stats}`}>
+            <button
+              onClick={() => {
+                alternativeLineAnimationHandler(0);
+                navigate("/profile");
+              }}
+            >
+              Posts
+            </button>
+            <button
+              onClick={() => {
+                alternativeLineAnimationHandler(1);
+                navigate("followers");
+              }}
+            >
               Followers
             </button>
-            <button onClick={() => lineAnimationHandler("following")}>
+            <button
+              onClick={() => {
+                alternativeLineAnimationHandler(2);
+                navigate("following");
+              }}
+            >
               Following
             </button>
             {lineVisibility.visible ? (
