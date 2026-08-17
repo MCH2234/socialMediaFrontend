@@ -47,7 +47,6 @@ const CurrentUserProfile = () => {
 
   useEffect(() => {
     const splitParams = URLParams.split("/")[2];
-    console.log(splitParams);
     line.current.className = `${style.line} ${initialLineStyle(splitParams)}`;
     setLineVisibility({
       visible: true,
@@ -55,73 +54,77 @@ const CurrentUserProfile = () => {
     });
   }, []);
 
-  const alternativeLineAnimationHandler = (index) => {
-    if (index === currentTab) return;
+  const lineAnimationHandler = (moveTo) => {
+    if (moveTo === currentTab) return;
     const elementToMoveTo =
-      containerRef.current.children[index].getBoundingClientRect();
+      containerRef.current.children[moveTo].getBoundingClientRect();
     const currentElement =
       containerRef.current.children[currentTab].getBoundingClientRect();
-    line.current.style.width = `${(elementToMoveTo.width * 80) / 100}px`;
     let left = 0;
-    if (index > 0) {
-      for (let i = 0; i < index; i++) {
+    if (currentTab > 0) {
+      for (let i = 0; i < currentTab; i++) {
         left += containerRef.current.children[i].getBoundingClientRect().width;
       }
     }
     left =
       left +
-      (containerRef.current.children[index].getBoundingClientRect().width *
+      (containerRef.current.children[currentTab].getBoundingClientRect().width *
         10) /
         100;
-    line.current.style.left = `${left}px`;
-    const diff = index > currentTab ? index - currentTab : currentTab - index;
+    line.current.style.left = `${left}px`; // starting position of the animation - centered under the tab where the animation started from
+    const diff =
+      moveTo > currentTab ? moveTo - currentTab : currentTab - moveTo; // how many tabs are there between current tab and the tab we want to switch to
     const currentElementWidth = currentElement.width;
     const elementToMoveToWidth = elementToMoveTo.width;
     let howMuchToMove = 0;
+    let finalHowMuchToMove;
     if (diff === 1) {
       howMuchToMove =
-        index < currentTab
-          ? (currentElementWidth * 10) / 100 +
-            elementToMoveToWidth -
-            (elementToMoveToWidth * 10) / 100
-          : -currentElementWidth +
-            (currentElementWidth * 10) / 100 -
+        moveTo < currentTab
+          ? -elementToMoveToWidth +
+            (elementToMoveToWidth * 10) / 100 -
+            (currentElementWidth * 10) / 100
+          : currentElementWidth -
+            (currentElementWidth * 10) / 100 +
             (elementToMoveToWidth * 10) / 100;
     } else if (diff > 1) {
-      for (
-        let j = currentTab;
-        index > currentTab ? j < index : j > index;
-        index > currentTab ? j++ : j--
-      ) {
+      let start = moveTo > currentTab ? currentTab : moveTo;
+      let end = moveTo > currentTab ? moveTo : currentTab;
+      for (let j = start; j < end; j++) {
         howMuchToMove +=
           containerRef.current.children[j].getBoundingClientRect().width;
       }
-      let finalHowMuchToMove =
-        index < currentTab
-          ? howMuchToMove -
+      finalHowMuchToMove =
+        moveTo < currentTab
+          ? -howMuchToMove +
+            (elementToMoveToWidth * 10) / 100 -
+            (currentElementWidth * 10) / 100
+          : +howMuchToMove -
             (currentElementWidth * 10) / 100 +
-            (elementToMoveToWidth * 10) / 100
-          : -howMuchToMove +
-            (currentElementWidth * 10) / 100 -
             (elementToMoveToWidth * 10) / 100;
       howMuchToMove = finalHowMuchToMove;
     }
     line.current.animate(
       [
         {
-          transform: `translateX(${howMuchToMove}px)`,
+          transform: `translateX(0px)`,
           width: `${(currentElementWidth * 80) / 100}px`,
           offset: 0,
         },
+        { transform: `translateX${howMuchToMove / 2}px`, offset: 0.25 },
         {
-          transform: `scaleX(0.25)`,
+          transform: `scaleX(0.25) translateX(${howMuchToMove / 0.75}px)`,
           offset: 0.5,
         },
-        { transform: `scaleX(1)` },
+        {
+          transform: `scaleX(1) translateX(${howMuchToMove}px)`,
+          width: `${(elementToMoveToWidth * 80) / 100}px`,
+          offset: 1,
+        },
       ],
-      { duration: 1000, easing: "ease-in-out", fill: "both" },
+      { duration: 1000, easing: "ease-in-out", fill: "forwards" },
     );
-    setCurrentTab(index);
+    setCurrentTab(moveTo);
   };
 
   return (
@@ -140,7 +143,7 @@ const CurrentUserProfile = () => {
           <div ref={containerRef} className={`${style.stats}`}>
             <button
               onClick={() => {
-                alternativeLineAnimationHandler(0);
+                lineAnimationHandler(0);
                 navigate("/profile");
               }}
             >
@@ -148,7 +151,7 @@ const CurrentUserProfile = () => {
             </button>
             <button
               onClick={() => {
-                alternativeLineAnimationHandler(1);
+                lineAnimationHandler(1);
                 navigate("followers");
               }}
             >
@@ -156,7 +159,7 @@ const CurrentUserProfile = () => {
             </button>
             <button
               onClick={() => {
-                alternativeLineAnimationHandler(2);
+                lineAnimationHandler(2);
                 navigate("following");
               }}
             >
