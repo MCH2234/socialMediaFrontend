@@ -169,7 +169,7 @@ const Comment = ({ comment, isUserComment, shouldFocus, removeComment }) => {
     let initalLikeCount = likeCount;
     let currentLikeState = like;
     try {
-      setLikeCount(like ? like - 1 : like + 1);
+      setLikeCount(like ? likeCount - 1 : likeCount + 1);
       setLike(!currentLikeState);
       const response = await fetch(`${fetchURL}/comment/like/${comment.id}`, {
         headers: {
