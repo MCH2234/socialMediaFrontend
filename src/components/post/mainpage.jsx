@@ -222,12 +222,24 @@ const MainPage = () => {
                   {JWT ? (
                     <>
                       {userNavItems.map((item, index) => (
-                        <li key={index} onClick={item.onClick}>
+                        <li
+                          key={index}
+                          onClick={() => {
+                            item.onClick();
+                            setFollowRequests({
+                              ...followRequests,
+                              show: false,
+                            });
+                          }}
+                        >
                           {item.text}
                         </li>
                       ))}
                       <img
-                        onClick={() => navigate("profile")}
+                        onClick={() => {
+                          navigate("profile");
+                          setFollowRequests({ ...followRequests, show: false });
+                        }}
                         className={`${style.profileIcon}`}
                         src={Profile}
                         height="20px"
@@ -236,7 +248,13 @@ const MainPage = () => {
                     </>
                   ) : (
                     guestNavItems.map((item, index) => (
-                      <li key={index} onClick={() => navigate(item.path)}>
+                      <li
+                        key={index}
+                        onClick={() => {
+                          navigate(item.path);
+                          setFollowRequests({ ...followRequests, show: false });
+                        }}
+                      >
                         {item.text}
                       </li>
                     ))

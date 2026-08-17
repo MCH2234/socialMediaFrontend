@@ -26,7 +26,7 @@ const AddPost = ({ posts, setPosts, setErrors, children }) => {
         setErrors(JSON.parse(body.error));
         throw new Error("An error occured");
       } else {
-        setPosts([body.post, ...posts]);
+        setPosts(body.post);
         setInput("");
       }
     } catch (error) {

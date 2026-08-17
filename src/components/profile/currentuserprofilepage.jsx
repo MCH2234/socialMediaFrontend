@@ -2,6 +2,7 @@ import {
   Navigate,
   Outlet,
   useHref,
+  useLocation,
   useNavigate,
   useOutletContext,
 } from "react-router";
@@ -35,12 +36,15 @@ const CurrentUserProfile = () => {
       default:
         return style.showOnPosts;
       case "posts":
+        setCurrentTab(0);
         return style.showOnPosts;
 
       case "followers":
+        setCurrentTab(1);
         return style.showOnFollowers;
 
       case "following":
+        setCurrentTab(2);
         return style.showOnFollowing;
     }
   };
@@ -111,7 +115,6 @@ const CurrentUserProfile = () => {
           width: `${(currentElementWidth * 80) / 100}px`,
           offset: 0,
         },
-        { transform: `translateX${howMuchToMove / 2}px`, offset: 0.25 },
         {
           transform: `scaleX(0.25) translateX(${howMuchToMove / 0.75}px)`,
           offset: 0.5,

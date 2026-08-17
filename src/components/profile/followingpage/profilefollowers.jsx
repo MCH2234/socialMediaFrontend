@@ -55,7 +55,6 @@ const ProfileFollowers = () => {
           if (!ok) {
             throw new Error(r.error);
           } else {
-            console.log(r.followers);
             if (!ignore) {
               setLoading(false);
               setFollow({

@@ -23,6 +23,10 @@ const HomePage = () => {
     setPosts(filterPosts);
   };
 
+  const addNewPostLocally = (newPost) => {
+    setPosts([newPost, ...posts]);
+  };
+
   const nextPage = async () => {
     try {
       const response = await fetch(`${fetchURL}/post/all?cursor=${cursor}`, {
@@ -112,7 +116,11 @@ const HomePage = () => {
     <>
       {!loading ? (
         <main>
-          <AddPost posts={posts} setPosts={setPosts} setErrors={setErrors}>
+          <AddPost
+            posts={posts}
+            setPosts={addNewPostLocally}
+            setErrors={setErrors}
+          >
             {errors ? (
               <ul className={`flex col ${style.errors}`}>
                 {errors.map((error, index) => (

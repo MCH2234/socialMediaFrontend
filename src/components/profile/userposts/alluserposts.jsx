@@ -1,14 +1,21 @@
 import { useOutletContext } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UserPost from "./postsprofile";
 import style from "../profile.module.css";
+import AddPost from "../../post/addpost";
+import Errors from "../../errors";
 
 const PostsOfUser = () => {
   const { JWT, fetchURL, user, posts, setPosts } = useOutletContext();
+  const [errors, setErrors] = useState();
 
   const deletePostLocally = (index) => {
     let filterPosts = posts.posts.filter((post) => post !== posts.posts[index]);
     setPosts({ ...posts, posts: filterPosts });
+  };
+
+  const addPostsLocally = (newPost) => {
+    setPosts({ ...posts, posts: [newPost, ...posts.posts] });
   };
 
   useEffect(() => {
@@ -31,7 +38,6 @@ const PostsOfUser = () => {
             throw new Error(r.error);
           } else {
             if (!ignore) {
-              console.log(r.posts);
               setPosts({ posts: r.posts, cursor: r.cursor });
             }
           }
@@ -56,7 +62,23 @@ const PostsOfUser = () => {
           />
         ))
       ) : (
-        <p>You don't have any posts</p>
+        <div className={`flex col ${style.addNewPost}`}>
+          <span>You don't have any posts. Make your first one!</span>
+
+          <AddPost
+            posts={posts.posts}
+            setPosts={addPostsLocally}
+            setErrors={setErrors}
+          >
+            {errors ? (
+              <ul className={`flex col ${style.errors}`}>
+                {errors.map((error, index) => (
+                  <Errors key={index} msg={error} />
+                ))}
+              </ul>
+            ) : null}
+          </AddPost>
+        </div>
       )}
     </section>
   );

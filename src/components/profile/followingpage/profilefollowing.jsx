@@ -19,7 +19,6 @@ const ProfileFollowing = () => {
       if (!response.ok) {
         throw new Error(body.error);
       } else {
-        console.log(body);
         const filterFollowing = follow.following.following.filter(
           (following) => following != user,
         );
